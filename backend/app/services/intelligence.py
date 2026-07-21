@@ -23,6 +23,7 @@ class InsightsEngine:
         # Delete old insights to ensure clean reload
         db.execute(delete(FinancialInsight).where(FinancialInsight.user_id == user_id))
         db.commit()
+        db.expire_all()
 
         generated_insights = []
 
@@ -49,7 +50,6 @@ class InsightsEngine:
                 description="Analysis of your historical outflows grouped by category.",
                 data={"category_breakdown": category_totals}
             )
-            db.add(insight_cats)
             generated_insights.append(insight_cats)
 
         # Detect Recurring Patterns (e.g. count >= 3 with roughly uniform intervals)
@@ -95,11 +95,12 @@ class InsightsEngine:
                 description="Identified repeating outflows which could represent active subscriptions.",
                 data={"recurring_patterns": detected_recurring}
             )
-            db.add(insight_patterns)
             generated_insights.append(insight_patterns)
 
-        # Generate Cash Flow Forecast (30 days projected balance)
+        # Calculate Cash Flow Forecast & Health Metrics before adding new objects to avoid auto-flush warnings
         forecast_data = InsightsEngine.calculate_forecasts(db, user_id)
+        health_metrics = InsightsEngine.calculate_health_metrics(db, user_id)
+
         if forecast_data:
             insight_forecast = FinancialInsight(
                 user_id=user_id,
@@ -108,11 +109,8 @@ class InsightsEngine:
                 description="Projected net balance flow across the next 30 days based on active recurring schedules.",
                 data={"forecast": forecast_data}
             )
-            db.add(insight_forecast)
             generated_insights.append(insight_forecast)
 
-        # Calculate Financial Health metrics (Burn rate, savings rate)
-        health_metrics = InsightsEngine.calculate_health_metrics(db, user_id)
         insight_health = FinancialInsight(
             user_id=user_id,
             type="health",
@@ -120,9 +118,9 @@ class InsightsEngine:
             description="Reconciled health indicators like savings rate and cash burn rate.",
             data=health_metrics
         )
-        db.add(insight_health)
         generated_insights.append(insight_health)
 
+        db.add_all(generated_insights)
         db.commit()
         # Refresh for return responses
         for ins in generated_insights:

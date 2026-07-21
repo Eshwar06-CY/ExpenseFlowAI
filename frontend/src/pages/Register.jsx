@@ -82,9 +82,7 @@ const Register = () => {
 
       <div className="w-full max-w-md z-10">
         <div className="text-center mb-8">
-          <div className="inline-flex w-12 h-12 rounded-xl bg-gradient-to-tr from-brand-600 to-violet-500 items-center justify-center font-bold text-xl text-white shadow-lg shadow-brand-500/20 mb-4">
-            E
-          </div>
+          <img src="/branding/logo-dark.png" alt="ExpenseFlow AI" className="h-10 mx-auto mb-4 object-contain" />
           <h2 className="text-2xl font-bold text-dark-50 tracking-tight">Create your account</h2>
           <p className="text-dark-400 text-sm mt-1.5">Start tracking smarter and saving better today</p>
         </div>

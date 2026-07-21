@@ -1,21 +1,28 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { Mail, CheckCircle2, ArrowLeft, AlertCircle } from 'lucide-react';
 import Card from '../components/Common/Card';
 import Button from '../components/Common/Button';
+import api from '../services/api';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+    setError('');
+    try {
+      await api.post('/auth/forgot-password', { email });
       setSubmitted(true);
-    }, 1000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -25,9 +32,7 @@ const ForgotPassword = () => {
 
       <div className="w-full max-w-md z-10">
         <div className="text-center mb-8">
-          <div className="inline-flex w-12 h-12 rounded-xl bg-gradient-to-tr from-brand-600 to-violet-500 items-center justify-center font-bold text-xl text-white shadow-lg shadow-brand-500/20 mb-4">
-            E
-          </div>
+          <img src="/branding/logo-dark.png" alt="ExpenseFlow AI" className="h-10 mx-auto mb-4 object-contain" />
           <h2 className="text-2xl font-bold text-dark-50 tracking-tight">Reset password</h2>
           <p className="text-dark-400 text-sm mt-1.5">Recover access to your fintech ledger workspace</p>
         </div>
@@ -35,6 +40,12 @@ const ForgotPassword = () => {
         <Card isGlass={true} className="p-8">
           {!submitted ? (
             <form onSubmit={handleSubmit} className="space-y-5">
+              {error && (
+                <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-xs text-red-400">{error}</span>
+                </div>
+              )}
               <div>
                 <label className="block text-xs font-semibold text-dark-400 uppercase tracking-wider mb-2">Email Address</label>
                 <div className="relative">

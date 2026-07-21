@@ -15,6 +15,7 @@ import { useToast } from '../context/ToastContext';
 import ConfirmDialog from '../components/Common/ConfirmDialog';
 import { DashboardSkeleton } from '../components/Common/SkeletonLoader';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import OnboardingWizard from '../components/Onboarding/OnboardingWizard';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
@@ -32,6 +33,7 @@ const fmt = (n) => {
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { isDark } = useTheme();
   const { addToast } = useToast();
   
   const [stats, setStats] = useState(null);

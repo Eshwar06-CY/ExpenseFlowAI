@@ -24,6 +24,18 @@ class Settings(BaseSettings):
     JWT_SECRET: str = "super_secret_key_change_me_in_production"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
+    # Password reset
+    PASSWORD_RESET_TOKEN_EXPIRE_MINUTES: int = 60
+    FRONTEND_URL: str = "http://localhost:5173"
+
+    # SMTP email configuration (optional — if not set, reset links are logged to console)
+    SMTP_HOST: Optional[str] = None
+    SMTP_PORT: int = 587
+    SMTP_USER: Optional[str] = None
+    SMTP_PASSWORD: Optional[str] = None
+    EMAILS_FROM_EMAIL: Optional[str] = None
+    EMAILS_FROM_NAME: str = "ExpenseFlow AI"
+
     model_config = SettingsConfigDict(
         env_file=(".env", ".env.local"),
         env_file_encoding="utf-8",

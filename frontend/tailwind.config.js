@@ -7,6 +7,11 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      spacing: {
+        '3.5': '0.875rem',
+        '4.5': '1.125rem',
+        '6.5': '1.625rem',
+      },
       colors: {
         brand: {
           50: '#f5f3ff',
@@ -31,6 +36,7 @@ export default {
           600: '#475569',
           700: '#334155',
           800: '#151c2e', // Deep Navy-Slate
+          850: '#101424',
           900: '#0b0f19', // Dark Slate Card Base
           950: '#04060d', // Ultra Deep Space black
         },

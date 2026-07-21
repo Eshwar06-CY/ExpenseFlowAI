@@ -3,27 +3,27 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+  :root, .light {
     /* EDL Premium Light Mode */
-    --bg-base: #f4f6fa;
-    --bg-card: rgba(255, 255, 255, 0.85);
-    --border-color: rgba(99, 102, 241, 0.08);
-    --border-glow: rgba(99, 102, 241, 0.15);
-    --text-primary: #0b0f19;
+    --bg-base: #f8fafc;
+    --bg-card: #ffffff;
+    --border-color: rgba(226, 232, 240, 0.8);
+    --border-glow: rgba(139, 92, 246, 0.2);
+    --text-primary: #0f172a;
     --text-secondary: #475569;
     --text-muted: #94a3b8;
-    --card-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.08), 0 1px 3px rgba(0, 0, 0, 0.02);
-    --accent-glow: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.05), transparent 70%);
+    --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+    --accent-glow: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.06), transparent 70%);
     --input-bg: #ffffff;
   }
 
   .dark {
-    /* EDL Premium Dark Mode (Not just inverted light) */
+    /* EDL Premium Dark Mode */
     --bg-base: #04060d;
-    --bg-card: rgba(11, 15, 25, 0.7);
-    --border-color: rgba(255, 255, 255, 0.04);
-    --border-glow: rgba(139, 92, 246, 0.12);
-    --text-primary: #f1f5f9;
+    --bg-card: rgba(11, 15, 25, 0.75);
+    --border-color: rgba(255, 255, 255, 0.06);
+    --border-glow: rgba(139, 92, 246, 0.15);
+    --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
     --text-muted: #64748b;
     --card-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.03);
@@ -41,15 +41,14 @@
     overflow-x: hidden;
   }
 
-  /* Input Fields Base Redesign inside layer base so utility padding takes precedence */
-  .edl-input,
+  :where(.edl-input,
   input[type="text"],
   input[type="email"],
   input[type="password"],
   input[type="number"],
   input[type="date"],
   select,
-  textarea {
+  textarea) {
     background: var(--input-bg);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
@@ -61,14 +60,14 @@
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .edl-input:focus,
-  input[type="text"]:focus,
-  input[type="email"]:focus,
-  input[type="password"]:focus,
-  input[type="number"]:focus,
-  input[type="date"]:focus,
-  select:focus,
-  textarea:focus {
+  :where(.edl-input,
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  select,
+  textarea):focus {
     border-color: rgba(139, 92, 246, 0.5);
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.01), 0 0 0 3px rgba(139, 92, 246, 0.12);
   }

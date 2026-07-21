@@ -2,16 +2,36 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/png" href="/branding/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ExpenseFlow AI | Track smarter. Save better.</title>
+    <title>ExpenseFlow AI — Smart Personal Finance & Ledger Workspace</title>
     
     <!-- Premium Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Inline Theme Restoration Script (Prevents FOUC) -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('ef_theme');
+          var active = saved;
+          if (!saved || saved === 'system') {
+            active = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          if (active === 'light') {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
+          } else {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
-  <body class="bg-dark-950 text-dark-100 min-h-screen font-sans antialiased overflow-x-hidden">
+  <body class="bg-dark-950 dark:bg-dark-950 light:bg-slate-50 text-dark-100 dark:text-dark-100 light:text-slate-900 min-h-screen font-sans antialiased overflow-x-hidden transition-colors duration-300">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

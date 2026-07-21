@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List, Dict, Any, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class ScenarioBase(BaseModel):
     name: str
@@ -29,8 +29,7 @@ class ScenarioResponse(ScenarioBase):
     id: int
     user_id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ForecastTimelinePoint(BaseModel):
     date: str

@@ -39,12 +39,12 @@ const Card = ({
       
       {(title || subtitle) && (
         <div className="mb-5 relative z-10">
-          {title && <h3 className="text-base font-bold text-dark-50 tracking-tight font-sans">{title}</h3>}
-          {subtitle && <p className="text-xs text-dark-400 mt-1.5 font-sans leading-normal">{subtitle}</p>}
+          {title && <h3 className="text-base font-bold text-dark-50 dark:text-dark-50 light:text-slate-900 tracking-tight font-sans">{title}</h3>}
+          {subtitle && <p className="text-xs text-dark-400 dark:text-dark-400 light:text-slate-500 mt-1.5 font-sans leading-normal">{subtitle}</p>}
         </div>
       )}
-      <div className="text-dark-200 relative z-10">{children}</div>
-      {footer && <div className="mt-6 pt-4 border-t border-dark-850/50 text-xs text-dark-400 relative z-10">{footer}</div>}
+      <div className="text-dark-200 dark:text-dark-200 light:text-slate-800 relative z-10">{children}</div>
+      {footer && <div className="mt-6 pt-4 border-t border-dark-850/50 dark:border-dark-850/50 light:border-slate-200 text-xs text-dark-400 dark:text-dark-400 light:text-slate-500 relative z-10">{footer}</div>}
     </div>
   );
 };

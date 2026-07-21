@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List, Dict, Any, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class ImportTemplateBase(BaseModel):
     name: str
@@ -18,8 +18,7 @@ class ImportTemplateResponse(ImportTemplateBase):
     id: int
     user_id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ImportHistoryResponse(BaseModel):
     id: int
@@ -31,8 +30,7 @@ class ImportHistoryResponse(BaseModel):
     rows_failed: int
     status: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class PreviewResponse(BaseModel):
     headers: List[str]

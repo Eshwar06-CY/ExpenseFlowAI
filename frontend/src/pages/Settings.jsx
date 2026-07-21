@@ -5,11 +5,13 @@ import Button from '../components/Common/Button';
 import ConfirmDialog from '../components/Common/ConfirmDialog';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { useTheme } from '../context/ThemeContext';
 import api from '../services/api';
 
 const Settings = () => {
   const { user, updateProfileState, logout } = useAuth();
   const { addToast } = useToast();
+  const { theme, setTheme } = useTheme();
   const [activeTab, setActiveTab] = useState('profile');
   
   // Profile state
@@ -26,7 +28,6 @@ const Settings = () => {
 
   // Preferences state
   const [currency, setCurrency] = useState(() => localStorage.getItem('ef_currency') || 'USD');
-  const [theme, setTheme] = useState(() => localStorage.getItem('ef_theme') || 'dark');
   const [timezone, setTimezone] = useState(() => localStorage.getItem('ef_timezone') || 'UTC');
   const [language, setLanguage] = useState(() => localStorage.getItem('ef_language') || 'en');
 
@@ -103,17 +104,9 @@ const Settings = () => {
 
   const handleSavePreferences = () => {
     localStorage.setItem('ef_currency', currency);
-    localStorage.setItem('ef_theme', theme);
     localStorage.setItem('ef_timezone', timezone);
     localStorage.setItem('ef_language', language);
-    
-    // Apply theme
-    if (theme === 'light') {
-      document.documentElement.classList.remove('dark');
-    } else {
-      document.documentElement.classList.add('dark');
-    }
-    
+    setTheme(theme);
     addToast('Regional preferences saved successfully!', 'success');
   };
 

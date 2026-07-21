@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Layout from './layouts/DashboardLayout';
 import ProtectedRoute from './components/Common/ProtectedRoute';
 import { DashboardSkeleton } from './components/Common/SkeletonLoader';
@@ -34,6 +35,7 @@ const Profile = lazy(() => import('./pages/Profile'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const Workspaces = lazy(() => import('./pages/Workspaces'));
 const Automations = lazy(() => import('./pages/Automations'));
@@ -47,9 +49,10 @@ const PageFallback = () => (
 function App() {
   return (
     <ErrorBoundary>
-      <Router>
-        <AuthProvider>
-          <ToastProvider>
+      <ThemeProvider>
+        <Router>
+          <AuthProvider>
+            <ToastProvider>
             <Suspense fallback={<PageFallback />}>
               <Routes>
                 {/* Public Landing page */}
@@ -59,6 +62,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
 
                 {/* Protected layouts core */}
                 <Route path="/dashboard" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
@@ -97,7 +101,8 @@ function App() {
           </ToastProvider>
         </AuthProvider>
       </Router>
-    </ErrorBoundary>
+    </ThemeProvider>
+  </ErrorBoundary>
   );
 }
 

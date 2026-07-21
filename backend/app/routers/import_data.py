@@ -358,7 +358,7 @@ def execute_mapped_import(
     """
     Processes final imported transactions list and logs the history job.
     """
-    rows_data = [r.dict() for r in payload.rows]
+    rows_data = [r.model_dump() for r in payload.rows]
     try:
         job = ImportService.execute_import(
             db=db,

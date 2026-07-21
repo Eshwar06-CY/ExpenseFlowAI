@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bell, Search, LogOut, User, Check, X, Menu, Wallet, CreditCard, Calendar, Target, Tag, Sparkles, RefreshCw, Users } from 'lucide-react';
+import { Bell, Search, LogOut, User, Check, X, Menu, Wallet, CreditCard, Calendar, Target, Tag, Sparkles, RefreshCw, Users, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import api from '../../services/api';
 
 const Navbar = ({ onMenuClick }) => {
   const { user, logout } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -110,13 +112,13 @@ const Navbar = ({ onMenuClick }) => {
   };
 
   return (
-    <header className="h-16 w-full flex items-center justify-between px-4 md:px-6 sticky top-0 z-40 bg-dark-950/40 backdrop-blur-xl border-b border-dark-900/40">
+    <header className="h-16 w-full flex items-center justify-between px-4 md:px-6 sticky top-0 z-40 bg-dark-950/40 dark:bg-dark-950/40 light:bg-white/85 backdrop-blur-xl border-b border-dark-900/40 dark:border-dark-900/40 light:border-slate-200 transition-colors duration-300">
       {/* Left: hamburger + search */}
       <div className="flex items-center gap-4">
         {/* Mobile menu button */}
         <button
           onClick={onMenuClick}
-          className="lg:hidden p-2 text-dark-400 hover:text-white hover:bg-dark-900/60 rounded-xl transition-all duration-200"
+          className="lg:hidden p-2 text-dark-400 dark:text-dark-400 light:text-slate-600 hover:text-white dark:hover:text-white light:hover:text-slate-900 hover:bg-dark-900/60 dark:hover:bg-dark-900/60 light:hover:bg-slate-100 rounded-xl transition-all duration-200"
           aria-label="Open menu"
         >
           <Menu className="w-5 h-5" />
@@ -124,8 +126,8 @@ const Navbar = ({ onMenuClick }) => {
 
         {/* Search Bar Container */}
         <div className="relative" ref={searchContainerRef}>
-          <div className="hidden md:flex items-center gap-2.5 bg-dark-900/80 border border-dark-850 rounded-xl px-3.5 py-2 w-80 focus-within:border-brand-500/60 focus-within:ring-1 focus-within:ring-brand-500/30 transition-all duration-300">
-            <Search className="w-4 h-4 text-dark-500" />
+          <div className="hidden md:flex items-center gap-2.5 bg-dark-900/80 dark:bg-dark-900/80 light:bg-slate-100 border border-dark-850 dark:border-dark-850 light:border-slate-200 rounded-xl px-3.5 py-2 w-80 focus-within:border-brand-500/60 focus-within:ring-1 focus-within:ring-brand-500/30 transition-all duration-300">
+            <Search className="w-4 h-4 text-dark-500 light:text-slate-400" />
             <input
               type="text"
               placeholder="Search workspaces & history..."
@@ -135,10 +137,10 @@ const Navbar = ({ onMenuClick }) => {
                 setShowSearchDropdown(true);
               }}
               onFocus={() => setShowSearchDropdown(true)}
-              className="bg-transparent text-xs text-dark-200 outline-none w-full placeholder-dark-500 font-medium"
+              className="bg-transparent text-xs text-dark-200 dark:text-dark-200 light:text-slate-800 outline-none w-full placeholder-dark-500 light:placeholder-slate-400 font-medium"
             />
             {searchQuery && (
-              <button onClick={() => setSearchQuery('')} className="text-dark-500 hover:text-dark-200 transition-colors">
+              <button onClick={() => setSearchQuery('')} className="text-dark-500 hover:text-dark-200 light:hover:text-slate-700 transition-colors">
                 <X className="w-3.5 h-3.5" />
               </button>
             )}
@@ -146,7 +148,7 @@ const Navbar = ({ onMenuClick }) => {
 
           {/* Search Result Overlay Dropdown */}
           {showSearchDropdown && searchQuery.trim().length >= 2 && (
-            <div className="absolute left-0 mt-2 w-[420px] rounded-2xl bg-dark-900/95 border border-dark-800 shadow-edl-depth z-50 overflow-hidden animate-fade-in text-xs max-h-[440px] overflow-y-auto backdrop-blur-xl">
+            <div className="absolute left-0 mt-2 w-[420px] rounded-2xl bg-dark-900/95 dark:bg-dark-900/95 light:bg-white border border-dark-800 dark:border-dark-800 light:border-slate-200 shadow-edl-depth z-50 overflow-hidden animate-fade-in text-xs max-h-[440px] overflow-y-auto backdrop-blur-xl">
               {searching ? (
                 <div className="p-8 text-center text-dark-450 flex flex-col items-center gap-3">
                   <RefreshCw className="w-5 h-5 animate-spin text-brand-400" />
@@ -296,16 +298,23 @@ const Navbar = ({ onMenuClick }) => {
 
       {/* Brand logo for mobile screens */}
       <div className="md:hidden flex items-center gap-2">
-        <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center font-bold text-white text-xs shadow-md shadow-brand-500/20 transform rotate-3">
-          E
-        </div>
-        <span className="font-extrabold text-sm tracking-tight text-dark-50">
+        <img src="/branding/logo-icon.png" alt="ExpenseFlow AI Logo" className="w-7 h-7 object-contain" />
+        <span className="font-extrabold text-sm tracking-tight text-dark-50 dark:text-dark-50 light:text-slate-900">
           ExpenseFlow
         </span>
       </div>
 
-      {/* Right side Profile & Dues */}
+      {/* Right side Profile, Theme Toggle & Dues */}
       <div className="flex items-center gap-3.5">
+        {/* Theme Toggle Button */}
+        <button
+          onClick={toggleTheme}
+          className="p-2.5 text-dark-400 dark:text-dark-400 light:text-slate-600 hover:text-white dark:hover:text-white light:hover:text-slate-900 bg-dark-900/50 dark:bg-dark-900/50 light:bg-slate-100 border border-dark-850 dark:border-dark-850 light:border-slate-200 rounded-xl transition-all active:scale-95 duration-200"
+          title={`Switch to ${isDark ? 'Light' : 'Dark'} mode`}
+          aria-label="Toggle dark/light theme"
+        >
+          {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
+        </button>
         {/* Notifications Bell Dropdown */}
         <div className="relative" ref={dropdownRef}>
           <button 

@@ -14,6 +14,13 @@ class TransactionBase(BaseModel):
     to_account_id: Optional[int] = None
 
 class TransactionCreate(TransactionBase):
+    @field_validator("amount")
+    @classmethod
+    def validate_amount(cls, v: float) -> float:
+        if v <= 0:
+            raise ValueError("Transaction amount must be strictly greater than zero.")
+        return v
+
     @field_validator("type")
     @classmethod
     def validate_type(cls, v: str) -> str:
@@ -42,6 +49,13 @@ class TransactionUpdate(BaseModel):
     category_id: Optional[int] = None
     account_id: Optional[int] = None
     to_account_id: Optional[int] = None
+
+    @field_validator("amount")
+    @classmethod
+    def validate_amount(cls, v: Optional[float]) -> Optional[float]:
+        if v is not None and v <= 0:
+            raise ValueError("Transaction amount must be strictly greater than zero.")
+        return v
 
     @field_validator("type")
     @classmethod

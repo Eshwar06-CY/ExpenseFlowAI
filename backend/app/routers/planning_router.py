@@ -87,7 +87,7 @@ def update_scenario(
     if not scenario:
         raise HTTPException(status_code=404, detail="Planning scenario not found.")
 
-    update_dict = payload.dict(exclude_unset=True)
+    update_dict = payload.model_dump(exclude_unset=True)
     for k, v in update_dict.items():
         setattr(scenario, k, v)
 

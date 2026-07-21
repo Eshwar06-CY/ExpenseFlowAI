@@ -1,6 +1,6 @@
 import json
 from io import BytesIO
-from datetime import datetime
+from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
@@ -94,7 +94,7 @@ def export_user_data(
     ).scalars().all()
 
     data = {
-        "export_date": datetime.utcnow().isoformat(),
+        "export_date": datetime.now(timezone.utc).replace(tzinfo=None).isoformat(),
         "user": {
             "id": current_user.id,
             "email": current_user.email,

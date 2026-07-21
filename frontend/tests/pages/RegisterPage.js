@@ -38,6 +38,10 @@ export class RegisterPage extends BasePage {
       if (isChecked) await this.acceptTermsCheckbox.uncheck();
     }
     await this.submitButton.click();
-    await this.waitForLoadingState();
+    if (acceptTerms && password === confirmPassword) {
+      await this.page.waitForURL('**/login', { timeout: 10000 }).catch(() => {});
+    } else {
+      await this.waitForLoadingState();
+    }
   }
 }

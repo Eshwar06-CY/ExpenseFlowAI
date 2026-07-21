@@ -1,4 +1,6 @@
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
+from secrets import token_urlsafe
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
@@ -13,8 +15,16 @@ from app.core.security import (
 )
 from app.database.session import get_db
 from app.models.user import User
-from app.schemas.auth import LoginRequest, TokenResponse, RefreshTokenRequest
+from app.models.password_reset import PasswordResetToken
+from app.schemas.auth import (
+    LoginRequest,
+    TokenResponse,
+    RefreshTokenRequest,
+    ForgotPasswordRequest,
+    ResetPasswordRequest,
+)
 from app.schemas.user import UserCreate, UserResponse
+from app.services.email_service import send_password_reset_email
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -117,3 +127,97 @@ def logout():
     Mock logout endpoint.
     """
     return {"success": True, "message": "Successfully logged out."}
+
+@router.post("/forgot-password")
+def forgot_password(payload: ForgotPasswordRequest, db: Session = Depends(get_db)):
+    """
+    Initiate password reset. Generates a secure token, stores it in the database,
+    and sends (or logs) the reset link.
+    Always returns success to prevent email enumeration attacks.
+    """
+    user = db.query(User).filter(User.email == payload.email).first()
+
+    if user:
+        # Invalidate any existing unused tokens for this user
+        db.query(PasswordResetToken).filter(
+            PasswordResetToken.user_id == user.id,
+            PasswordResetToken.is_used == False,
+        ).update({"is_used": True})
+
+        # Generate a new cryptographically secure token
+        reset_token = token_urlsafe(32)
+        expires_at = datetime.now(timezone.utc) + timedelta(
+            minutes=settings.PASSWORD_RESET_TOKEN_EXPIRE_MINUTES
+        )
+
+        db_token = PasswordResetToken(
+            user_id=user.id,
+            token=reset_token,
+            expires_at=expires_at,
+            is_used=False,
+        )
+        db.add(db_token)
+        db.commit()
+
+        # Send email or log to console
+        reset_url = f"{settings.FRONTEND_URL}/reset-password?token={reset_token}"
+        send_password_reset_email(
+            to_email=user.email,
+            reset_token=reset_token,
+            reset_url=reset_url,
+        )
+
+    # Always return success (prevents email enumeration)
+    return {
+        "success": True,
+        "message": "If an account with that email exists, a password reset link has been sent.",
+    }
+
+@router.post("/reset-password")
+def reset_password(payload: ResetPasswordRequest, db: Session = Depends(get_db)):
+    """
+    Complete the password reset using a valid, unexpired token.
+    Updates the user's password hash and marks the token as used.
+    """
+    db_token = db.query(PasswordResetToken).filter(
+        PasswordResetToken.token == payload.token,
+        PasswordResetToken.is_used == False,
+    ).first()
+
+    if not db_token:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired reset token.",
+        )
+
+    # Check expiry
+    now = datetime.now(timezone.utc)
+    token_expiry = db_token.expires_at
+    # Ensure timezone-aware comparison
+    if token_expiry.tzinfo is None:
+        token_expiry = token_expiry.replace(tzinfo=timezone.utc)
+    if now > token_expiry:
+        db_token.is_used = True
+        db.commit()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Reset token has expired. Please request a new one.",
+        )
+
+    # Fetch user
+    user = db.query(User).filter(User.id == db_token.user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found.",
+        )
+
+    # Update password
+    user.password_hash = get_password_hash(payload.new_password)
+    db_token.is_used = True
+    db.commit()
+
+    return {
+        "success": True,
+        "message": "Password has been reset successfully. You can now log in with your new password.",
+    }

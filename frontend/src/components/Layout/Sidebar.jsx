@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, TrendingUp, ArrowUpRight, ArrowDownLeft, Settings, Sparkles, Landmark, Tag, RefreshCw, Sliders, Target, Calendar, RotateCw, FileText, X, Bell, FileSpreadsheet, RotateCcw, LineChart, Heart, Users, Zap, ChevronDown, ChevronUp } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
 
 const Sidebar = ({ mobile = false, onClose }) => {
+  const { isDark } = useTheme();
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const coreItems = [
@@ -33,24 +35,20 @@ const Sidebar = ({ mobile = false, onClose }) => {
   ];
 
   return (
-    <aside className={`w-64 bg-dark-950/80 backdrop-blur-xl border-r border-dark-900/60 h-screen flex flex-col ${mobile ? '' : 'fixed left-0 top-0'} z-30 transition-all duration-300`}>
+    <aside className={`w-64 bg-dark-950/80 dark:bg-dark-950/80 light:bg-white/95 backdrop-blur-xl border-r border-dark-900/60 dark:border-dark-900/60 light:border-slate-200 h-screen flex flex-col ${mobile ? '' : 'fixed left-0 top-0'} z-30 transition-all duration-300`}>
       {/* Brand Header */}
-      <div className="h-16 flex items-center justify-between px-6 border-b border-dark-900/50 bg-dark-950/45">
-        <div className="flex items-center gap-3">
-          {/* Tangible 3D Styled Logo */}
-          <div className="relative w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-lg shadow-brand-500/25 border border-brand-400/20 transform rotate-3 hover:rotate-12 transition-transform duration-300">
-            <span className="absolute inset-0.5 rounded-lg bg-black/10" />
-            <span className="relative z-10 text-sm tracking-tight font-extrabold">E</span>
-          </div>
-          <div>
-            <h1 className="font-extrabold text-[15px] text-dark-50 tracking-tight leading-none font-sans">ExpenseFlow</h1>
-            <span className="text-[9px] text-brand-400 font-bold tracking-widest uppercase mt-1.5 inline-block">Workspace v1</span>
-          </div>
+      <div className="h-16 flex items-center justify-between px-5 border-b border-dark-900/50 dark:border-dark-900/50 light:border-slate-200 bg-dark-950/45 dark:bg-dark-950/45 light:bg-slate-50/50">
+        <div className="flex items-center gap-2.5">
+          <img
+            src={isDark ? "/branding/logo-dark.png" : "/branding/logo-light.png"}
+            alt="ExpenseFlow AI"
+            className="h-8 object-contain"
+          />
         </div>
         {mobile && (
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-dark-400 hover:text-white hover:bg-dark-900 transition-colors"
+            className="p-1.5 rounded-lg text-dark-400 hover:text-white dark:hover:text-white light:hover:text-slate-900 hover:bg-dark-900 transition-colors"
             aria-label="Close menu"
           >
             <X className="w-5 h-5" />

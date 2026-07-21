@@ -17,6 +17,7 @@ from app.models.workspace import Workspace, WorkspaceMember
 from app.models.audit_log import AuditLog
 from app.models.comment import Comment
 from app.models.automation import AutomationRule, AutomationExecution
+from app.models.password_reset import PasswordResetToken
 
 # Export for clean access
 __all__ = [
@@ -41,7 +42,7 @@ __all__ = [
     "AuditLog",
     "Comment",
     "AutomationRule",
-    "AutomationExecution"
+    "AutomationExecution",
+    "PasswordResetToken",
 ]
-
 

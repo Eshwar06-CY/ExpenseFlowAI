@@ -11,6 +11,8 @@ export default defineConfig({
 
     fullyParallel: true,
 
+    workers: 2,
+
     retries: 1,
 
     reporter: [
@@ -38,4 +40,11 @@ export default defineConfig({
             },
         },
     ],
+
+    webServer: {
+        command: 'npx vite --port 5173',
+        url: 'http://localhost:5173',
+        reuseExistingServer: true,
+        timeout: 120000,
+    },
 });
