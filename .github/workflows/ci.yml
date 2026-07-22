@@ -24,6 +24,7 @@ jobs:
       DATABASE_URL: sqlite:///./ci_test.db
       JWT_SECRET: test_jwt_secret_key_for_ci_pipelines_must_be_32_chars
       LOG_LEVEL: WARNING
+      PYTHONPATH: .
 
     steps:
       - name: Checkout Repository
@@ -43,11 +44,11 @@ jobs:
 
       - name: Run Alembic Migrations
         run: |
-          alembic upgrade head
+          python -m alembic upgrade head
 
       - name: Run Pytest Test Suite
         run: |
-          pytest
+          python -m pytest
 
   frontend:
     name: Frontend CI
