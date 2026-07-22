@@ -12,6 +12,7 @@ from app.models.budget import Budget
 from app.models.bill import Bill
 from app.models.category import Category
 from app.services.finance_engine import FinanceEngine
+from app.services.cache import cache_service
 from app.core.security import get_password_hash
 
 DATABASE_URL = "sqlite:///./test_finance_engine.db"
@@ -53,7 +54,7 @@ def _seed_test_data():
     db.refresh(cat_food)
     db.refresh(cat_salary)
 
-    now = datetime.now()
+    now = datetime.utcnow()
     tx1 = Transaction(
         user_id=user.id,
         account_id=account1.id,
@@ -72,11 +73,12 @@ def _seed_test_data():
     )
     db.add_all([tx1, tx2])
 
-    budget = Budget(user_id=user.id, category_id=cat_food.id, amount=1500.0, spent=1000.0, month="2026-07")
+    budget = Budget(user_id=user.id, category_id=cat_food.id, amount=1500.0, spent=1000.0, month=now.strftime("%Y-%m"))
     bill = Bill(user_id=user.id, name="Internet Bill", amount=100.0, due_date=now + timedelta(days=10), is_paid=True)
     db.add_all([budget, bill])
     db.commit()
 
+    cache_service.clear()
     user_id = user.id
     db.close()
     return user_id

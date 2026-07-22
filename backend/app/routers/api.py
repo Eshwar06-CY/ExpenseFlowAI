@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.routers import auth, users, accounts, categories, transactions, budgets, goals, bills, recurring_tx, notifications, reports, insights, export, settings, health, import_data, search, planning_router as planning, collaboration, automation
+from app.routers import auth, users, accounts, categories, transactions, budgets, goals, bills, recurring_tx, notifications, reports, insights, export, settings, health, import_data, search, planning_router as planning, collaboration, automation, ai
 
 api_router = APIRouter()
 
@@ -23,5 +23,6 @@ api_router.include_router(search.router, prefix="/search", tags=["search"])
 api_router.include_router(planning.router, prefix="/planning", tags=["planning"])
 api_router.include_router(collaboration.router, prefix="/workspaces", tags=["collaboration"])
 api_router.include_router(automation.router, prefix="/automation", tags=["automation"])
+api_router.include_router(ai.router, prefix="/ai", tags=["ai"])
 api_router.include_router(health.router, tags=["health"])
 
