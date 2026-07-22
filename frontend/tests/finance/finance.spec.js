@@ -129,8 +129,7 @@ test.describe('ExpenseFlow Core Finance Module E2E Suite', () => {
 
       // 5. Navigate to Dashboard and verify total money earned is correct
       await dashboardPage.navigate();
-      const earnedText = await dashboardPage.moneyEarnedCard.locator('h3').first().textContent();
-      expect(earnedText).toContain('3,500');
+      await expect(dashboardPage.moneyEarnedCard.locator('h3').first()).toContainText('3,500');
     });
   });
 
@@ -168,8 +167,7 @@ test.describe('ExpenseFlow Core Finance Module E2E Suite', () => {
 
       // 6. Verify Outflow KPI on Dashboard
       await dashboardPage.navigate();
-      const outflows = await dashboardPage.moneySpentCard.locator('h3').first().textContent();
-      expect(outflows).toContain('250');
+      await expect(dashboardPage.moneySpentCard.locator('h3').first()).toContainText('250');
     });
   });
 

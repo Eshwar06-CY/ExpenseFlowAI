@@ -129,62 +129,21 @@ class InsightsEngine:
 
     @staticmethod
     def calculate_health_metrics(db: Session, user_id: int) -> Dict[str, Any]:
-        # Accounts balance
-        stmt_bal = select(func.sum(Account.balance)).where(Account.user_id == user_id)
-        total_balance = db.execute(stmt_bal).scalar() or 0.0
-
-        # Current month income vs expense
-        today = datetime.now(timezone.utc)
-        start_month = datetime(today.year, today.month, 1)
-        
-        stmt_inc = select(func.sum(Transaction.amount)).where(
-            Transaction.user_id == user_id,
-            Transaction.type == "income",
-            Transaction.date >= start_month
-        )
-        income_sum = db.execute(stmt_inc).scalar() or 0.0
-
-        stmt_exp = select(func.sum(Transaction.amount)).where(
-            Transaction.user_id == user_id,
-            Transaction.type == "expense",
-            Transaction.date >= start_month
-        )
-        expense_sum = db.execute(stmt_exp).scalar() or 0.0
-
-        savings_rate = 0.0
-        if income_sum > 0:
-            savings_rate = ((income_sum - expense_sum) / income_sum) * 100
-
-        # Calculate Burn Rate: Sustenance Months
-        # Average monthly expense in last 3 months
-        three_months_ago = today - timedelta(days=90)
-        stmt_avg_exp = select(func.sum(Transaction.amount)).where(
-            Transaction.user_id == user_id,
-            Transaction.type == "expense",
-            Transaction.date >= three_months_ago
-        )
-        total_three_months_exp = db.execute(stmt_avg_exp).scalar() or 0.0
-        avg_monthly_expense = total_three_months_exp / 3.0
-
-        burn_rate_months = 99.0
-        if avg_monthly_expense > 0:
-            burn_rate_months = round(total_balance / avg_monthly_expense, 1)
-
-        # Budget utilization average
-        stmt_budgets = select(Budget).where(Budget.user_id == user_id)
-        budgets = db.execute(stmt_budgets).scalars().all()
-        budget_adherence = 100.0
-        if budgets:
-            adhered = len([b for b in budgets if b.spent <= b.amount])
-            budget_adherence = (adhered / len(budgets)) * 100
+        from app.services.finance_engine import FinanceEngine
+        now = datetime.now()
+        start_month = datetime(now.year, now.month, 1)
+        totals = FinanceEngine.get_period_totals(db, user_id, start_date=start_month)
+        reserve = FinanceEngine.get_cash_reserve_metrics(db, user_id)
+        budget = FinanceEngine.get_budget_adherence(db, user_id)
+        balance = FinanceEngine.get_active_balance(db, user_id)
 
         return {
-            "total_balance": total_balance,
-            "monthly_income": income_sum,
-            "monthly_expenses": expense_sum,
-            "savings_rate": round(savings_rate, 1),
-            "burn_rate_months": burn_rate_months,
-            "budget_adherence_rate": round(budget_adherence, 1)
+            "total_balance": balance,
+            "monthly_income": totals["income"],
+            "monthly_expenses": totals["expense"],
+            "savings_rate": totals["savings_rate"],
+            "burn_rate_months": reserve["reserve_months"],
+            "budget_adherence_rate": budget["adherence_rate_pct"]
         }
 
     @staticmethod

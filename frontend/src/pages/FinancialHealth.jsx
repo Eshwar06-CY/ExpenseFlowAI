@@ -160,34 +160,44 @@ const FinancialHealth = () => {
         </Card>
 
         {/* Quick metrics summary */}
-        <div className="space-y-4">
-          <div className="bg-dark-900 border border-dark-850 p-4 rounded-2xl flex items-center gap-3.5">
-            <div className="p-2.5 bg-green-500/10 border border-green-500/20 text-green-400 rounded-xl">
-              <TrendingUp className="w-5 h-5" />
+        <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-2 md:grid-cols-1">
+          <div className="bg-dark-900 border border-dark-850 p-3.5 rounded-2xl flex items-center gap-3">
+            <div className="p-2 bg-green-500/10 border border-green-500/20 text-green-400 rounded-xl">
+              <TrendingUp className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-[10px] uppercase font-bold text-dark-500">Savings Margin</p>
-              <p className="text-lg font-black text-dark-100">{health?.savings_rate}%</p>
+              <p className="text-[10px] uppercase font-bold text-dark-400">Savings Margin</p>
+              <p className="text-base font-black text-dark-100">{health?.savings_rate}%</p>
             </div>
           </div>
 
-          <div className="bg-dark-900 border border-dark-850 p-4 rounded-2xl flex items-center gap-3.5">
-            <div className="p-2.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-xl">
-              <Award className="w-5 h-5" />
+          <div className="bg-dark-900 border border-dark-850 p-3.5 rounded-2xl flex items-center gap-3">
+            <div className="p-2 bg-brand-500/10 border border-brand-500/20 text-brand-400 rounded-xl">
+              <Award className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-[10px] uppercase font-bold text-dark-500">Emergency Fund</p>
-              <p className="text-lg font-black text-dark-100">{health?.emergency_fund_coverage_months} Months</p>
+              <p className="text-[10px] uppercase font-bold text-dark-400">Emergency Fund</p>
+              <p className="text-base font-black text-dark-100">{health?.emergency_fund_coverage_months} Months</p>
             </div>
           </div>
 
-          <div className="bg-dark-900 border border-dark-850 p-4 rounded-2xl flex items-center gap-3.5">
-            <div className="p-2.5 bg-brand-500/10 border border-brand-500/20 text-brand-400 rounded-xl">
-              <Percent className="w-5 h-5" />
+          <div className="bg-dark-900 border border-dark-850 p-3.5 rounded-2xl flex items-center gap-3">
+            <div className="p-2 bg-cyanFlow-500/10 border border-cyanFlow-500/20 text-cyanFlow-400 rounded-xl">
+              <DollarSign className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-[10px] uppercase font-bold text-dark-500">Income Stability</p>
-              <p className="text-lg font-black text-dark-100">{health?.income_stability}%</p>
+              <p className="text-[10px] uppercase font-bold text-dark-400">Projected 30d Balance</p>
+              <p className="text-base font-black text-dark-100 font-mono">₹{health?.projected_30d_balance?.toLocaleString()}</p>
+            </div>
+          </div>
+
+          <div className="bg-dark-900 border border-dark-850 p-3.5 rounded-2xl flex items-center gap-3">
+            <div className="p-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl">
+              <ShieldCheck className="w-4 h-4" />
+            </div>
+            <div>
+              <p className="text-[10px] uppercase font-bold text-dark-400">Bill Reliability</p>
+              <p className="text-base font-black text-dark-100">{health?.bill_payment_rate}%</p>
             </div>
           </div>
         </div>

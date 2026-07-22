@@ -40,7 +40,7 @@ const Sidebar = ({ mobile = false, onClose }) => {
       <div className="h-16 flex items-center justify-between px-5 border-b border-dark-900/50 dark:border-dark-900/50 light:border-slate-200 bg-dark-950/45 dark:bg-dark-950/45 light:bg-slate-50/50">
         <div className="flex items-center gap-2.5">
           <img
-            src={isDark ? "/branding/logo-dark.png" : "/branding/logo-light.png"}
+            src="/branding/gemini-svg.svg"
             alt="ExpenseFlow AI"
             className="h-8 object-contain"
           />

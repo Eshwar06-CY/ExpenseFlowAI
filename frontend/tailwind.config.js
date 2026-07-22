@@ -14,17 +14,22 @@ export default {
       },
       colors: {
         brand: {
-          50: '#f5f3ff',
-          100: '#ede9fe',
-          200: '#ddd6fe',
-          300: '#c4b5fd',
-          400: '#a78bfa',
-          500: '#8b5cf6', // Aurora Purple
-          600: '#7c3aed',
-          700: '#6d28d9',
-          800: '#5b21b6',
-          900: '#4c1d95',
-          950: '#2e1065',
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#2563eb', // Official ExpenseFlow AI Royal Blue
+          600: '#1d4ed8',
+          700: '#1e40af',
+          800: '#1e3a8a',
+          900: '#172554',
+          950: '#0b132b',
+        },
+        cyanFlow: {
+          400: '#22d3ee',
+          500: '#06b6d4', // Official ExpenseFlow AI Cyan
+          600: '#0891b2',
         },
         dark: {
           50: '#f8fafc',
@@ -35,17 +40,17 @@ export default {
           500: '#64748b',
           600: '#475569',
           700: '#334155',
-          800: '#151c2e', // Deep Navy-Slate
-          850: '#101424',
-          900: '#0b0f19', // Dark Slate Card Base
-          950: '#04060d', // Ultra Deep Space black
+          800: '#1e293b', // Slate 800 Surface
+          850: '#0f172a', // Slate 900 Surface
+          900: '#0b1120', // Dark Slate Card Base
+          950: '#020617', // Slate 950 Deep Space Black
         },
-        // EDL Color Language
-        income: '#05b074',
-        savings: '#00d2fc',
-        goals: '#8b5cf6',
-        expenses: '#fa5f70',
-        investments: '#ffb000',
+        // Official ExpenseFlow AI Color Language
+        income: '#10b981',   // Emerald Green from logo arrow
+        savings: '#06b6d4',  // Cyan Flow from logo ledger lines
+        goals: '#2563eb',    // Royal Blue from logo brand icon
+        expenses: '#f43f5e', // Rose Coral for outflows
+        investments: '#10b981',
         debt: '#f97316',
       },
       fontFamily: {
@@ -53,13 +58,13 @@ export default {
       },
       boxShadow: {
         'edl-depth': '0 20px 48px -10px rgba(0, 0, 0, 0.65)',
-        'edl-glow-brand': '0 0 30px rgba(139, 92, 246, 0.15)',
-        'edl-glow-income': '0 0 30px rgba(5, 176, 116, 0.15)',
-        'edl-glow-savings': '0 0 30px rgba(0, 210, 252, 0.15)',
-        'edl-glow-expenses': '0 0 30px rgba(250, 95, 112, 0.15)',
-        'edl-glow-goals': '0 0 30px rgba(139, 92, 246, 0.15)',
-        'edl-glow-investments': '0 0 30px rgba(255, 176, 0, 0.15)',
-        'edl-glow-debt': '0 0 30px rgba(249, 115, 22, 0.15)',
+        'edl-glow-brand': '0 0 30px rgba(37, 99, 235, 0.18)',
+        'edl-glow-income': '0 0 30px rgba(16, 185, 129, 0.18)',
+        'edl-glow-savings': '0 0 30px rgba(6, 182, 212, 0.18)',
+        'edl-glow-expenses': '0 0 30px rgba(244, 63, 94, 0.18)',
+        'edl-glow-goals': '0 0 30px rgba(37, 99, 235, 0.18)',
+        'edl-glow-investments': '0 0 30px rgba(16, 185, 129, 0.18)',
+        'edl-glow-debt': '0 0 30px rgba(249, 115, 22, 0.18)',
         'edl-card': '0 12px 32px -4px rgba(0, 0, 0, 0.45)',
         'edl-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
       }

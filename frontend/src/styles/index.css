@@ -4,31 +4,31 @@
 
 @layer base {
   :root, .light {
-    /* EDL Premium Light Mode */
+    /* ExpenseFlow AI Fintech Light Mode */
     --bg-base: #f8fafc;
     --bg-card: #ffffff;
     --border-color: rgba(226, 232, 240, 0.8);
-    --border-glow: rgba(139, 92, 246, 0.2);
+    --border-glow: rgba(37, 99, 235, 0.18);
     --text-primary: #0f172a;
     --text-secondary: #475569;
     --text-muted: #94a3b8;
     --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
-    --accent-glow: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.06), transparent 70%);
+    --accent-glow: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.05), transparent 70%);
     --input-bg: #ffffff;
   }
 
   .dark {
-    /* EDL Premium Dark Mode */
-    --bg-base: #04060d;
-    --bg-card: rgba(11, 15, 25, 0.75);
+    /* ExpenseFlow AI Fintech Dark Mode */
+    --bg-base: #020617;
+    --bg-card: rgba(15, 23, 42, 0.75);
     --border-color: rgba(255, 255, 255, 0.06);
-    --border-glow: rgba(139, 92, 246, 0.15);
+    --border-glow: rgba(37, 99, 235, 0.2);
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
     --text-muted: #64748b;
     --card-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.03);
-    --accent-glow: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.08), transparent 60%);
-    --input-bg: rgba(11, 15, 25, 0.85);
+    --accent-glow: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.08), transparent 60%);
+    --input-bg: rgba(15, 23, 42, 0.85);
   }
 
   body {
@@ -36,8 +36,8 @@
     color: var(--text-primary);
     font-family: 'Outfit', 'Inter', sans-serif;
     transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    background-image: radial-gradient(circle at top right, rgba(139, 92, 246, 0.03), transparent 45%),
-                      radial-gradient(circle at bottom left, rgba(6, 182, 212, 0.02), transparent 45%);
+    background-image: radial-gradient(circle at top right, rgba(37, 99, 235, 0.04), transparent 45%),
+                      radial-gradient(circle at bottom left, rgba(6, 182, 212, 0.03), transparent 45%);
     overflow-x: hidden;
   }
 
@@ -68,8 +68,8 @@
   input[type="date"],
   select,
   textarea):focus {
-    border-color: rgba(139, 92, 246, 0.5);
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.01), 0 0 0 3px rgba(139, 92, 246, 0.12);
+    border-color: rgba(37, 99, 235, 0.5);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.01), 0 0 0 3px rgba(37, 99, 235, 0.15);
   }
 
   /* Autofill override to preserve dark/light theme background and text colors */
@@ -95,7 +95,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(139, 92, 246, 0.15);
+  background: rgba(37, 99, 235, 0.2);
   border-radius: 99px;
   transition: background 0.3s ease;
 }

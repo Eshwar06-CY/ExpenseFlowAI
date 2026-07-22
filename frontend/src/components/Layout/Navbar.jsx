@@ -298,10 +298,11 @@ const Navbar = ({ onMenuClick }) => {
 
       {/* Brand logo for mobile screens */}
       <div className="md:hidden flex items-center gap-2">
-        <img src="/branding/logo-icon.png" alt="ExpenseFlow AI Logo" className="w-7 h-7 object-contain" />
-        <span className="font-extrabold text-sm tracking-tight text-dark-50 dark:text-dark-50 light:text-slate-900">
-          ExpenseFlow
-        </span>
+        <img
+          src="/branding/gemini-svg.svg"
+          alt="ExpenseFlow AI Logo"
+          className="h-7 object-contain"
+        />
       </div>
 
       {/* Right side Profile, Theme Toggle & Dues */}

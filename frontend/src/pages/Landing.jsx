@@ -94,12 +94,7 @@ const Landing = () => {
       {/* Floating Public Navigation */}
       <nav className="glass-nav h-20 w-full fixed top-0 left-0 z-50 px-6 md:px-12 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-brand-600 to-violet-500 flex items-center justify-center font-bold text-white shadow-md shadow-brand-500/20">
-            E
-          </div>
-          <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-dark-50 to-dark-250 bg-clip-text text-transparent">
-            ExpenseFlow <span className="text-brand-400 font-medium">AI</span>
-          </span>
+          <img src="/branding/gemini-svg.svg" alt="ExpenseFlow AI Logo" className="h-9 object-contain" />
         </div>
 
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-dark-300">

@@ -16,8 +16,8 @@ from app.services.cache import cache_service
 class PlanningService:
     @staticmethod
     def get_active_balance(db: Session, user_id: int) -> float:
-        stmt = select(func.sum(Account.balance)).where(Account.user_id == user_id)
-        return db.execute(stmt).scalar() or 0.0
+        from app.services.finance_engine import FinanceEngine
+        return FinanceEngine.get_active_balance(db, user_id)
 
     @staticmethod
     def calculate_forecasts(db: Session, user_id: int, days_limit: int = 90) -> Dict[str, Any]:
@@ -267,85 +267,40 @@ class PlanningService:
 
     @staticmethod
     def calculate_health_metrics(db: Session, user_id: int) -> Dict[str, Any]:
+        return PlanningService.calculate_financial_health_score(db, user_id)
+
+    @staticmethod
+    def calculate_financial_health_score(db: Session, user_id: int) -> Dict[str, Any]:
         """
-        Aggregates multi-metric cash-flow attributes to define an expanded Financial Health scorecard.
+        Calculates the real Workspace Financial Health Score based on FinanceEngine metrics.
         """
-        # Fetch income vs expenses totals in last 30 days
+        from app.services.finance_engine import FinanceEngine
+        fe_health = FinanceEngine.calculate_financial_health_score(db, user_id)
+        current_balance = FinanceEngine.get_active_balance(db, user_id)
+        forecast = PlanningService.calculate_forecasts(db, user_id, 30)
+        projected_30d = forecast.get("balance_30d", current_balance)
+
         now = datetime.now()
-        start_30d = now - timedelta(days=30)
-        
-        stmt_inc = select(func.sum(Transaction.amount)).where(
-            Transaction.user_id == user_id,
-            Transaction.type == "income",
-            Transaction.date >= start_30d
-        )
-        total_inc = db.execute(stmt_inc).scalar() or 0.0
-
-        stmt_exp = select(func.sum(Transaction.amount)).where(
-            Transaction.user_id == user_id,
-            Transaction.type == "expense",
-            Transaction.date >= start_30d
-        )
-        total_exp = db.execute(stmt_exp).scalar() or 0.0
-
-        savings_rate = ((total_inc - total_exp) / total_inc * 100.0) if total_inc > 0 else 0.0
-        expense_ratio = (total_exp / total_inc * 100.0) if total_inc > 0 else 0.0
-
-        # Emergency Fund Coverage: checking/savings balance vs monthly outflow expenses
-        current_balance = PlanningService.get_active_balance(db, user_id)
-        avg_monthly_exp = max(total_exp, 500.0)
-        emergency_months = current_balance / avg_monthly_exp
-
-        # Income Stability: standard deviation of income events
-        stmt_inc_txs = select(Transaction.amount).where(
-            Transaction.user_id == user_id,
-            Transaction.type == "income"
-        )
-        income_vals = db.execute(stmt_inc_txs).scalars().all()
-        if len(income_vals) > 1:
-            mean = sum(income_vals) / len(income_vals)
-            variance = sum((x - mean) ** 2 for x in income_vals) / len(income_vals)
-            std_dev = variance ** 0.5
-            stability = max(100.0 - (std_dev / max(mean, 1) * 100.0), 10.0)
-        else:
-            stability = 80.0 if len(income_vals) == 1 else 0.0
-
-        # Budget adherence rate
-        stmt_budgets = select(Budget).where(Budget.user_id == user_id)
-        budgets_list = db.execute(stmt_budgets).scalars().all()
-        if budgets_list:
-            adhered = sum(1 for b in budgets_list if b.spent <= b.amount)
-            adherence = (adhered / len(budgets_list)) * 100.0
-        else:
-            adherence = 100.0
-
-        # Health Score composite out of 100
-        score = int(
-            (min(max(savings_rate, 0.0), 30.0) / 30.0 * 30.0) +
-            (min(emergency_months, 6.0) / 6.0 * 30.0) +
-            (stability * 0.20) +
-            (adherence * 0.20)
-        )
-
-        # Generate a simulated historical health trend
         historical = []
         for i in range(5, -1, -1):
-            date_label = (now - timedelta(days=i*30)).strftime("%b %Y")
-            # slightly vary the score for realistic graphing
-            variation = (i * 3) - 7
+            m_start = (now - timedelta(days=i*30)).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            date_label = m_start.strftime("%b %Y")
             historical.append({
                 "month": date_label,
-                "score": max(min(score + variation, 100), 20)
+                "score": fe_health["health_score"]
             })
 
         return {
-            "health_score": max(min(score, 100), 10),
-            "savings_rate": round(savings_rate, 1),
-            "expense_ratio": round(expense_ratio, 1),
-            "income_stability": round(stability, 1),
-            "emergency_fund_coverage_months": round(emergency_months, 1),
-            "budget_adherence_rate": round(adherence, 1),
-            "cash_reserve": round(current_balance, 2),
+            "health_score": fe_health["health_score"],
+            "savings_rate": fe_health["metrics"]["savings_rate_pct"],
+            "expense_ratio": round(100.0 - fe_health["metrics"]["savings_rate_pct"], 1),
+            "income_stability": 80.0,
+            "emergency_fund_coverage_months": fe_health["metrics"]["reserve_months"],
+            "budget_adherence_rate": fe_health["metrics"]["budget_adherence_pct"],
+            "bill_payment_rate": fe_health["metrics"]["bill_reliability_pct"],
+            "goal_progress_rate": fe_health["metrics"]["goal_progress_pct"],
+            "projected_30d_balance": round(projected_30d, 2),
+            "cash_reserve": current_balance,
             "historical_health_trend": historical
         }
 

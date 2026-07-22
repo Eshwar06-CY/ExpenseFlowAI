@@ -53,6 +53,10 @@ async def lifespan(app: FastAPI):
     logger.info("Starting ExpenseFlow AI Backend service...")
     logger.info(f"App configuration: {settings.PROJECT_NAME} in v1 mode")
 
+    # Validate SMTP Email Infrastructure
+    from app.services.email_service import email_service
+    email_service.validate_smtp_configuration()
+
     # Start automation scheduler
     _scheduler.add_job(_run_scheduled_automations, "cron", hour=1, minute=0, args=["daily"], id="auto_daily", replace_existing=True)
     _scheduler.add_job(_run_scheduled_automations, "cron", day_of_week="mon", hour=2, minute=0, args=["weekly"], id="auto_weekly", replace_existing=True)

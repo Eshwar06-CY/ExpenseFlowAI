@@ -25,16 +25,57 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
     # Password reset
-    PASSWORD_RESET_TOKEN_EXPIRE_MINUTES: int = 60
+    PASSWORD_RESET_TOKEN_EXPIRE_MINUTES: int = 30
     FRONTEND_URL: str = "http://localhost:5173"
 
-    # SMTP email configuration (optional — if not set, reset links are logged to console)
+    # SMTP & Brevo email configuration
     SMTP_HOST: Optional[str] = None
     SMTP_PORT: int = 587
     SMTP_USER: Optional[str] = None
     SMTP_PASSWORD: Optional[str] = None
     EMAILS_FROM_EMAIL: Optional[str] = None
     EMAILS_FROM_NAME: str = "ExpenseFlow AI"
+
+    # Brevo-specific aliases
+    BREVO_SMTP_SERVER: Optional[str] = None
+    BREVO_SMTP_PORT: Optional[int] = None
+    BREVO_SMTP_USERNAME: Optional[str] = None
+    BREVO_SMTP_PASSWORD: Optional[str] = None
+    MAIL_FROM: Optional[str] = None
+
+    # AI Financial Advisor & Local LLM (Ollama)
+    LLM_PROVIDER: str = "ollama"
+    OLLAMA_BASE_URL: str = "http://localhost:11434"
+    OLLAMA_MODEL: str = "qwen3:8b"
+    OLLAMA_TIMEOUT: float = 60.0
+
+    @property
+    def effective_smtp_server(self) -> Optional[str]:
+        return self.BREVO_SMTP_SERVER or self.SMTP_HOST
+
+    @property
+    def effective_smtp_port(self) -> int:
+        return self.BREVO_SMTP_PORT or self.SMTP_PORT or 587
+
+    @property
+    def effective_smtp_username(self) -> Optional[str]:
+        return self.BREVO_SMTP_USERNAME or self.SMTP_USER
+
+    @property
+    def effective_smtp_password(self) -> Optional[str]:
+        return self.BREVO_SMTP_PASSWORD or self.SMTP_PASSWORD
+
+    @property
+    def effective_mail_from(self) -> Optional[str]:
+        return self.MAIL_FROM or self.EMAILS_FROM_EMAIL or self.effective_smtp_username
+
+    @property
+    def is_smtp_configured(self) -> bool:
+        return bool(
+            self.effective_smtp_server and
+            self.effective_smtp_username and
+            self.effective_smtp_password
+        )
 
     model_config = SettingsConfigDict(
         env_file=(".env", ".env.local"),

@@ -54,10 +54,10 @@ export class BasePage {
     const profileTrigger = this.page.locator('[aria-label="User profile settings"]');
     await profileTrigger.hover();
     
-    const logoutBtn = this.page.locator('button:has-text("Logout"), button:has-text("Sign Out"), button:has-text("Logout Account")');
+    const logoutBtn = this.page.locator('button:has-text("Logout Account"), button:has-text("Logout"), button:has-text("Sign Out")');
     await logoutBtn.waitFor({ state: 'visible', timeout: 5000 });
-    await logoutBtn.click();
-    await this.page.waitForLoadState('networkidle');
+    await logoutBtn.click({ force: true });
+    await this.page.waitForURL(/\/login/);
   }
 
   async selectOptionByText(selectLocator, text) {

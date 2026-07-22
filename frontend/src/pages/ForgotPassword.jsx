@@ -32,7 +32,7 @@ const ForgotPassword = () => {
 
       <div className="w-full max-w-md z-10">
         <div className="text-center mb-8">
-          <img src="/branding/logo-dark.png" alt="ExpenseFlow AI" className="h-10 mx-auto mb-4 object-contain" />
+          <img src="/branding/gemini-svg.svg" alt="ExpenseFlow AI" className="h-10 mx-auto mb-4 object-contain" />
           <h2 className="text-2xl font-bold text-dark-50 tracking-tight">Reset password</h2>
           <p className="text-dark-400 text-sm mt-1.5">Recover access to your fintech ledger workspace</p>
         </div>

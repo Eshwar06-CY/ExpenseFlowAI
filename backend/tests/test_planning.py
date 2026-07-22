@@ -1,6 +1,7 @@
 import os
 import sys
-from datetime import datetime, timezone, timedelta
+import pytest
+from datetime import datetime, timezone, timedelta, timedelta
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -10,7 +11,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.main import app
 from app.database.session import get_db
-from app.database.base_class import Base
+from app.database.base import Base
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test_planning.db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
@@ -27,7 +28,14 @@ def override_get_db():
     finally:
         db.close()
 
-app.dependency_overrides[get_db] = override_get_db
+@pytest.fixture(autouse=True)
+def setup_database():
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+    app.dependency_overrides[get_db] = override_get_db
+    yield
+    app.dependency_overrides[get_db] = override_get_db
+
 client = TestClient(app)
 
 def test_planning_flows():

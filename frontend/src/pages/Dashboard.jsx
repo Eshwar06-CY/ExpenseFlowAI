@@ -43,6 +43,7 @@ const Dashboard = () => {
   const [accounts, setAccounts] = useState([]);
   const [briefing, setBriefing] = useState(null);
   const [periodSummary, setPeriodSummary] = useState(null);
+  const [healthData, setHealthData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   
@@ -60,7 +61,26 @@ const Dashboard = () => {
   const [showCustomizeModal, setShowCustomizeModal] = useState(false);
   const [dashSettings, setDashSettings] = useState(() => {
     const saved = localStorage.getItem('ef_dashboard_settings');
-    return saved ? JSON.parse(saved) : {
+    try {
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return {
+          ...parsed,
+          widgets: {
+            healthScore: true,
+            budgetsSavings: true,
+            upcomingBills: true,
+            cashFlowChart: true,
+            donutChart: true,
+            activityTimeline: true,
+            advisor: true,
+            ...(parsed.widgets || {}),
+            kpiRow: true // Always force KPI summary row visible
+          }
+        };
+      }
+    } catch (e) {}
+    return {
       widgets: {
         kpiRow: true,
         healthScore: true,
@@ -85,22 +105,25 @@ const Dashboard = () => {
     try {
       setLoading(true);
       const period = dashSettings.dateRange;
-      const [statsRes, budRes, goalRes, billRes, briefRes, acctRes, summaryRes] = await Promise.all([
+      const results = await Promise.allSettled([
         api.get('/transactions/stats'),
         api.get('/budgets'),
         api.get('/goals'),
         api.get('/bills'),
         api.get('/insights/briefing/daily'),
         api.get('/accounts'),
-        api.get('/reports/analytics/summary', { params: { period } })
+        api.get('/reports/analytics/summary', { params: { period } }),
+        api.get('/planning/financial-health')
       ]);
-      setStats(statsRes.data);
-      setBudgets(budRes.data);
-      setGoals(goalRes.data);
-      setBills(billRes.data);
-      setBriefing(briefRes.data);
-      setAccounts(acctRes.data);
-      setPeriodSummary(summaryRes.data);
+
+      if (results[0].status === 'fulfilled') setStats(results[0].value.data);
+      if (results[1].status === 'fulfilled') setBudgets(results[1].value.data);
+      if (results[2].status === 'fulfilled') setGoals(results[2].value.data);
+      if (results[3].status === 'fulfilled') setBills(results[3].value.data);
+      if (results[4].status === 'fulfilled') setBriefing(results[4].value.data);
+      if (results[5].status === 'fulfilled') setAccounts(results[5].value.data);
+      if (results[6].status === 'fulfilled') setPeriodSummary(results[6].value.data);
+      if (results[7].status === 'fulfilled') setHealthData(results[7].value.data);
     } catch (err) {
       console.warn('Dashboard statistics failed to load or empty profile:', err);
     } finally {
@@ -136,7 +159,7 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
+      <div role="status" className="loading-spinner p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
         <DashboardSkeleton />
       </div>
     );
@@ -157,27 +180,8 @@ const Dashboard = () => {
   const monthlyTrends = stats?.monthly_trends || [];
   const recentTransactions = stats?.recent_transactions || [];
 
-  // Financial Health Score calculation
-  let savingsScore = 0;
-  if (savingsRate >= 30) {
-    savingsScore = 40;
-  } else if (savingsRate > 0) {
-    savingsScore = (savingsRate / 30) * 40;
-  }
-
-  let budgetScore = 30;
-  if (budgets.length > 0) {
-    const adhered = budgets.filter(b => b.spent <= b.amount).length;
-    budgetScore = (adhered / budgets.length) * 30;
-  }
-
-  let billScore = 30;
-  if (bills.length > 0) {
-    const paidCount = bills.filter(b => b.is_paid).length;
-    billScore = (paidCount / bills.length) * 30;
-  }
-
-  const financialHealthScore = Math.round(savingsScore + budgetScore + billScore);
+  // Financial Health Score derived directly from centralized backend FinanceEngine
+  const financialHealthScore = Math.round(healthData?.health_score ?? 100);
 
   // SVG Gauge Math
   const radius = 50;

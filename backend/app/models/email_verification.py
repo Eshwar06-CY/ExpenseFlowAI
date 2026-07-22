@@ -5,13 +5,12 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.database.base_class import Base
 
 
-class PasswordResetToken(Base):
+class EmailVerificationToken(Base):
     """
-    SQLAlchemy model for password reset tokens.
-    Tokens are single-use, expire after 30 minutes, and are tied to a user_id.
-    Stores SHA-256 hashed tokens for security.
+    SQLAlchemy model for email verification tokens.
+    Tokens are single-use, expire after 24 hours, and store SHA-256 hashes.
     """
-    __tablename__ = "password_reset_tokens"
+    __tablename__ = "email_verification_tokens"
 
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.id"), nullable=False)
     token: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)

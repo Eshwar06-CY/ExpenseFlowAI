@@ -18,6 +18,7 @@ from app.models.audit_log import AuditLog
 from app.models.comment import Comment
 from app.models.automation import AutomationRule, AutomationExecution
 from app.models.password_reset import PasswordResetToken
+from app.models.email_verification import EmailVerificationToken
 
 # Export for clean access
 __all__ = [
@@ -44,5 +45,6 @@ __all__ = [
     "AutomationRule",
     "AutomationExecution",
     "PasswordResetToken",
+    "EmailVerificationToken",
 ]
 

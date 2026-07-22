@@ -5,7 +5,10 @@ import { useAuth } from '../context/AuthContext';
 import Card from '../components/Common/Card';
 import Button from '../components/Common/Button';
 
+import { useTheme } from '../context/ThemeContext';
+
 const Login = () => {
+  const { isDark } = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -49,16 +52,20 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-dark-950 p-6 relative">
+    <div className="min-h-screen flex items-center justify-center bg-dark-950 dark:bg-dark-950 light:bg-slate-50 p-6 relative transition-colors duration-300">
       {/* Background glow graphics */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-500/5 rounded-full blur-3xl"></div>
 
       <div className="w-full max-w-md z-10">
         <div className="text-center mb-8">
-          <img src="/branding/logo-dark.png" alt="ExpenseFlow AI" className="h-10 mx-auto mb-4 object-contain" />
-          <h2 className="text-2xl font-bold text-dark-50 tracking-tight">Welcome back</h2>
-          <p className="text-dark-400 text-sm mt-1.5">Enter details to manage your workspace</p>
+          <img
+            src="/branding/gemini-svg.svg"
+            alt="ExpenseFlow AI"
+            className="h-10 mx-auto mb-4 object-contain"
+          />
+          <h2 className="text-2xl font-bold text-dark-50 dark:text-dark-50 light:text-slate-900 tracking-tight">Welcome back</h2>
+          <p className="text-dark-400 dark:text-dark-400 light:text-slate-500 text-sm mt-1.5">Enter details to manage your workspace</p>
         </div>
 
         <Card isGlass={true} className="p-8">

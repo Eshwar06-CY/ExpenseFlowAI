@@ -8,14 +8,14 @@ export class DashboardPage extends BasePage {
     super(page);
 
     // KPI Summary Panel selectors
-    this.totalMoneyCard = page.locator('.edl-card').filter({ has: page.locator('p:has-text("Total money I have")') }).first();
-    this.moneySpentCard = page.locator('.edl-card').filter({ has: page.locator('p:has-text("Money spent")') }).first();
-    this.moneyEarnedCard = page.locator('.edl-card').filter({ has: page.locator('p:has-text("Money earned")') }).first();
+    this.totalMoneyCard = page.locator('p').filter({ hasText: /Total money/i }).locator('..');
+    this.moneySpentCard = page.locator('p').filter({ hasText: /Money spent/i }).locator('..');
+    this.moneyEarnedCard = page.locator('p').filter({ hasText: /Money earned/i }).locator('..');
     
     // Onboarding Wizard selectors (if active)
-    this.onboardingModal = page.locator('.onboarding-wizard-container, [role="dialog"]:has-text("Welcome to ExpenseFlow")');
+    this.onboardingModal = page.locator('.onboarding-wizard-container');
     this.onboardingNextButton = page.locator('button:has-text("Next"), button:has-text("Continue")');
-    this.onboardingCloseButton = page.locator('button:has-text("Skip"), button:has-text("Close")');
+    this.onboardingCloseButton = page.locator('button:has-text("Skip Setup"), button:has-text("Skip"), button:has-text("Close")');
 
     // Layout configuration options
     this.customizeDashboardButton = page.locator('button:has-text("Customize"), button:has-text("Layout")');
@@ -24,16 +24,23 @@ export class DashboardPage extends BasePage {
   async navigate() {
     await this.goto('/dashboard');
     await this.waitForLoadingState();
+    await this.skipOnboardingIfVisible();
   }
 
   async isOnboardingVisible() {
-    return await this.onboardingModal.isVisible();
+    try {
+      return await this.onboardingModal.isVisible({ timeout: 2000 });
+    } catch (e) {
+      return false;
+    }
   }
 
   async skipOnboardingIfVisible() {
     if (await this.isOnboardingVisible()) {
-      await this.onboardingCloseButton.click();
-      await this.onboardingModal.waitFor({ state: 'hidden', timeout: 5000 });
+      try {
+        await this.onboardingCloseButton.click();
+        await this.onboardingModal.waitFor({ state: 'hidden', timeout: 5000 });
+      } catch (e) {}
     }
   }
 

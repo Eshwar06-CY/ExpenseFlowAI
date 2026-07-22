@@ -73,6 +73,9 @@ class FinancialHealthResponse(BaseModel):
     income_stability: float
     emergency_fund_coverage_months: float
     budget_adherence_rate: float
+    bill_payment_rate: float
+    goal_progress_rate: float
+    projected_30d_balance: float
     cash_reserve: float
     historical_health_trend: List[HealthTrendPoint]
 

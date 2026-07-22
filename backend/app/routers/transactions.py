@@ -427,79 +427,10 @@ def get_transaction_stats(
     if cached is not None:
         return cached
 
-    # 1. Total Current Balance across all user accounts
-    stmt_bal = select(func.sum(Account.balance)).where(Account.user_id == current_user.id)
-    total_balance = db.execute(stmt_bal).scalar() or 0.0
+    from app.services.finance_engine import FinanceEngine
 
-    # 2. Total Income sum
-    stmt_inc = select(func.sum(Transaction.amount)).where(
-        Transaction.user_id == current_user.id,
-        Transaction.type == "income"
-    )
-    total_income = db.execute(stmt_inc).scalar() or 0.0
+    summary = FinanceEngine.get_dashboard_summary(db, current_user.id)
 
-    # 3. Total Expense sum
-    stmt_exp = select(func.sum(Transaction.amount)).where(
-        Transaction.user_id == current_user.id,
-        Transaction.type == "expense"
-    )
-    total_expenses = db.execute(stmt_exp).scalar() or 0.0
-
-    # 4. Savings
-    savings = total_income - total_expenses
-
-    # 5. Category-wise Spending distribution (expenses only)
-    stmt_cats = (
-        select(Category.name, Category.color, func.sum(Transaction.amount))
-        .join(Transaction, Transaction.category_id == Category.id)
-        .where(
-            Transaction.user_id == current_user.id,
-            Transaction.type == "expense"
-        )
-        .group_by(Category.id, Category.name, Category.color)
-    )
-    cat_results = db.execute(stmt_cats).all()
-    category_spending = [
-        {"category": name, "color": color or "#CCCCCC", "amount": amount}
-        for name, color, amount in cat_results
-    ]
-
-    # 6. Recent Monthly Trend (last 6 calendar months)
-    from datetime import timedelta
-    six_months_ago = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=180)
-    stmt_trend = (
-        select(Transaction.type, Transaction.amount, Transaction.date)
-        .where(
-            Transaction.user_id == current_user.id,
-            Transaction.type.in_(["income", "expense"]),
-            Transaction.date >= six_months_ago
-        )
-        .order_by(Transaction.date.asc())
-    )
-    trend_raw = db.execute(stmt_trend).all()
-    
-    # Process months in Python to maintain sqlite/mysql compatibility
-    monthly_map = {}
-    for tx_type, amount, date in trend_raw:
-        month_str = date.strftime("%b %Y")  # e.g., "Oct 2026"
-        if month_str not in monthly_map:
-            monthly_map[month_str] = {"month": month_str, "income": 0.0, "expenses": 0.0}
-        
-        if tx_type == "income":
-            monthly_map[month_str]["income"] += amount
-        elif tx_type == "expense":
-            monthly_map[month_str]["expenses"] += amount
-
-    # Sort months chronologically
-    try:
-        monthly_trends = sorted(
-            list(monthly_map.values()),
-            key=lambda x: datetime.strptime(x["month"], "%b %Y")
-        )[-6:]  # Keep last 6 months
-    except Exception:
-        monthly_trends = list(monthly_map.values())[-6:]
-
-    # 7. Recent Transactions (limit 5)
     stmt_recent = (
         select(Transaction)
         .options(
@@ -517,12 +448,12 @@ def get_transaction_stats(
     ]
 
     stats_result = {
-        "total_balance": total_balance,
-        "total_income": total_income,
-        "total_expenses": total_expenses,
-        "savings": savings,
-        "category_spending": category_spending,
-        "monthly_trends": monthly_trends,
+        "total_balance": summary["total_balance"],
+        "total_income": summary["total_income"],
+        "total_expenses": summary["total_expenses"],
+        "savings": summary["period_savings"],
+        "category_spending": summary["category_spending"],
+        "monthly_trends": summary["monthly_trends"],
         "recent_transactions": recent_transactions
     }
     cache_service.set(cache_key, stats_result, ttl=60)

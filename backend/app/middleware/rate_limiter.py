@@ -16,6 +16,9 @@ RATE_LIMITS = {
     "/api/v1/auth/login": (5, 60),       # 5 attempts per minute
     "/api/v1/auth/register": (3, 60),     # 3 attempts per minute
     "/api/v1/auth/refresh": (10, 60),     # 10 attempts per minute
+    "/api/v1/auth/forgot-password": (3, 60), # 3 attempts per minute
+    "/api/v1/auth/resend-verification": (3, 60), # 3 attempts per minute
+    "/api/v1/auth/send-verification-email": (3, 60), # 3 attempts per minute
 }
 
 

@@ -15,9 +15,9 @@ const Button = ({
   const baseStyles = 'edl-btn inline-flex items-center justify-center font-bold text-sm tracking-wide transition-all focus:outline-none disabled:opacity-40 disabled:pointer-events-none active:scale-95 duration-250';
   
   const variants = {
-    primary: 'edl-btn-primary text-white bg-gradient-to-tr from-brand-600 to-indigo-500 shadow-lg shadow-brand-500/20 hover:shadow-brand-500/35 border border-brand-500/30',
-    secondary: 'edl-btn-secondary bg-dark-900 border border-dark-800 text-dark-100 hover:border-brand-500/40 hover:bg-dark-850',
-    outline: 'bg-transparent border border-dark-800 text-dark-300 hover:text-white hover:border-brand-500/30 hover:bg-brand-500/5',
+    primary: 'edl-btn-primary text-white bg-gradient-to-tr from-brand-600 to-cyanFlow-500 shadow-lg shadow-brand-500/20 hover:shadow-brand-500/35 border border-brand-500/30',
+    secondary: 'edl-btn-secondary bg-dark-900 border border-dark-800 text-dark-100 dark:text-dark-100 light:text-slate-800 light:bg-slate-100 light:border-slate-200 hover:border-brand-500/40 hover:bg-dark-850',
+    outline: 'bg-transparent border border-dark-800 dark:border-dark-800 light:border-slate-300 text-dark-300 dark:text-dark-300 light:text-slate-700 hover:text-white light:hover:text-slate-900 hover:border-brand-500/30 hover:bg-brand-500/5',
     danger: 'bg-gradient-to-tr from-red-600 to-rose-500 text-white shadow-lg shadow-red-500/20 hover:shadow-red-500/35 border border-red-500/30',
   };
 

@@ -111,7 +111,7 @@ export default function OnboardingWizard({ onComplete, onSkip }) {
   ];
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl">
+    <div className="onboarding-wizard-container fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-950/80 backdrop-blur-md">
       <div className="absolute inset-0 bg-gradient-to-tr from-brand-600/5 to-violet-500/5" />
 
       <div className="w-full max-w-lg z-10 animate-scale-up">

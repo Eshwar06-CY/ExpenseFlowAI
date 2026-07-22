@@ -8,7 +8,7 @@ export const ThemeProvider = ({ children }) => {
     if (saved === 'light' || saved === 'dark' || saved === 'system') {
       return saved;
     }
-    return 'dark'; // Default theme
+    return 'system'; // Default to OS system preference
   });
 
   const [resolvedTheme, setResolvedTheme] = useState('dark');
