@@ -62,7 +62,21 @@ async def lifespan(app: FastAPI):
     _scheduler.add_job(_run_scheduled_automations, "cron", day_of_week="mon", hour=2, minute=0, args=["weekly"], id="auto_weekly", replace_existing=True)
     _scheduler.add_job(_run_scheduled_automations, "cron", day=1, hour=3, minute=0, args=["monthly"], id="auto_monthly", replace_existing=True)
     _scheduler.start()
+    logger.info("==================================================")
+    logger.info("ExpenseFlowAI Backend Configuration Loaded:")
+    logger.info("AI_PROVIDER     : %s", settings.AI_PROVIDER)
+    logger.info("GEMINI_MODEL    : %s", settings.GEMINI_MODEL)
+    logger.info("==================================================")
     logger.info("Automation scheduler started (daily@01:00, weekly@Mon02:00, monthly@1st03:00)")
+
+    # Pre-warm AI Provider
+    try:
+        from app.ai.factory import get_llm_provider
+        provider = get_llm_provider()
+        if hasattr(provider, "warmup"):
+            provider.warmup()
+    except Exception as _w_err:
+        logger.warning("[AI Startup Warmup] Deferred warmup: %s", str(_w_err))
 
     yield
 
@@ -88,7 +102,18 @@ setup_rate_limiter(app)
 setup_exception_handlers(app)
 
 # Register central routers
+from app.routers.personalization import router as personalization_router
+from app.routers.dashboard_overview import router as dashboard_overview_router
+from app.routers.digests import router as digests_router
+from app.routers.explanations import router as explanations_router
+from app.routers.chat_stream import router as chat_stream_router
+
 app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(personalization_router, prefix="/api/personalization", tags=["personalization-root-alias"])
+app.include_router(dashboard_overview_router, prefix="/api/dashboard", tags=["command-center-root-alias"])
+app.include_router(digests_router, prefix="/api", tags=["digests-root-alias"])
+app.include_router(explanations_router, prefix="/api", tags=["explanations-root-alias"])
+app.include_router(chat_stream_router, prefix="/api", tags=["chat-stream-root-alias"])
 
 
 @app.get("/")

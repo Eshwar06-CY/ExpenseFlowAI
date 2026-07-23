@@ -19,6 +19,10 @@ from app.models.comment import Comment
 from app.models.automation import AutomationRule, AutomationExecution
 from app.models.password_reset import PasswordResetToken
 from app.models.email_verification import EmailVerificationToken
+from app.models.memory import AIMemory
+from app.models.user_preferences import UserPreferences
+from app.models.user_behavior import UserBehaviorEvent, UserLearnedBehavior
+from app.models.personalization import AIPersonalizationSettings
 
 # Export for clean access
 __all__ = [
@@ -46,5 +50,10 @@ __all__ = [
     "AutomationExecution",
     "PasswordResetToken",
     "EmailVerificationToken",
+    "AIMemory",
+    "UserPreferences",
+    "UserBehaviorEvent",
+    "UserLearnedBehavior",
+    "AIPersonalizationSettings"
 ]
 

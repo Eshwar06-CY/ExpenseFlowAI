@@ -8,12 +8,18 @@ import { useToast } from '../context/ToastContext';
 import { useTheme } from '../context/ThemeContext';
 import api from '../services/api';
 
+import AISettings from './settings/AISettings';
+import LearnedBehaviors from './settings/LearnedBehaviors';
+import PrivacySettings from './settings/PrivacySettings';
+import ExportData from './settings/ExportData';
+import { Bot, Brain, ShieldCheck, FileJson } from 'lucide-react';
+
 const Settings = () => {
   const { user, updateProfileState, logout } = useAuth();
   const { addToast } = useToast();
   const { theme, setTheme } = useTheme();
   const [activeTab, setActiveTab] = useState('profile');
-  
+
   // Profile state
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -45,6 +51,11 @@ const Settings = () => {
   const [deleteConfirmation, setDeleteConfirmation] = useState('');
   const [deleting, setDeleting] = useState(false);
 
+  // Personalization State
+  const [personalization, setPersonalization] = useState(null);
+  const [personalizationLoading, setPersonalizationLoading] = useState(false);
+  const [personalizationSaving, setPersonalizationSaving] = useState(false);
+
   useEffect(() => {
     if (user) {
       setFullName(user.full_name || user.name || '');
@@ -52,12 +63,82 @@ const Settings = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    fetchPersonalization();
+  }, []);
+
+  const fetchPersonalization = async () => {
+    setPersonalizationLoading(true);
+    try {
+      const res = await api.get('/personalization');
+      setPersonalization(res.data);
+    } catch (err) {
+      console.error('Failed to load personalization data', err);
+    } finally {
+      setPersonalizationLoading(false);
+    }
+  };
+
+  const handleUpdatePreference = async (key, value) => {
+    if (!personalization) return;
+    setPersonalizationSaving(true);
+    
+    // Optimistic update
+    const prevPreferences = { ...personalization.preferences };
+    setPersonalization({
+      ...personalization,
+      preferences: {
+        ...personalization.preferences,
+        [key]: value
+      }
+    });
+
+    try {
+      const res = await api.put('/personalization/preferences', { [key]: value });
+      setPersonalization(res.data);
+      addToast('Setting updated successfully!', 'success');
+    } catch (err) {
+      // Rollback on failure
+      setPersonalization({ ...personalization, preferences: prevPreferences });
+      addToast(err.response?.data?.detail || 'Failed to update setting.', 'error');
+    } finally {
+      setPersonalizationSaving(false);
+    }
+  };
+
+  const handleDeleteBehavior = async (behaviorId) => {
+    try {
+      await api.delete(`/personalization/behavior/${behaviorId}`);
+      setPersonalization({
+        ...personalization,
+        behaviors: personalization.behaviors.filter(b => b.id !== behaviorId)
+      });
+      addToast('Learned behavior removed.', 'success');
+    } catch (err) {
+      addToast(err.response?.data?.detail || 'Failed to remove behavior.', 'error');
+    }
+  };
+
+  const handleResetAllAIData = async () => {
+    try {
+      const res = await api.post('/personalization/reset');
+      setPersonalization(res.data);
+      addToast('All AI learned data has been reset to default baseline.', 'warning');
+    } catch (err) {
+      addToast(err.response?.data?.detail || 'Failed to reset AI data.', 'error');
+    }
+  };
+
   const tabs = [
     { id: 'profile', name: 'Profile', icon: User },
     { id: 'security', name: 'Security', icon: Shield },
     { id: 'preferences', name: 'Preferences & Regional', icon: Sliders },
-    { id: 'notifications', name: 'Notifications preferences', icon: Bell },
-    { id: 'data', name: 'Data & Privacy', icon: Database },
+    { id: 'notifications', name: 'Notifications', icon: Bell },
+    { id: 'ai_settings', name: 'AI Settings', icon: Bot },
+    { id: 'learned_behaviors', name: 'Learned Behaviors', icon: Brain },
+    { id: 'privacy', name: 'Privacy Center', icon: ShieldCheck },
+    { id: 'export_data', name: 'Export Data', icon: FileJson },
+    { id: 'data', name: 'System & Danger Zone', icon: Database },
   ];
 
   const handleSaveProfile = async (e) => {
@@ -450,7 +531,40 @@ const Settings = () => {
             </Card>
           )}
 
-          {/* Data & Privacy Tab */}
+          {/* AI Settings Tab */}
+          {activeTab === 'ai_settings' && (
+            <AISettings
+              preferences={personalization?.preferences}
+              onUpdatePreference={handleUpdatePreference}
+              isSaving={personalizationSaving}
+            />
+          )}
+
+          {/* Learned Behaviors Tab */}
+          {activeTab === 'learned_behaviors' && (
+            <LearnedBehaviors
+              behaviors={personalization?.behaviors || []}
+              confidence={personalization?.confidence ?? 0.92}
+              onDeleteBehavior={handleDeleteBehavior}
+            />
+          )}
+
+          {/* Privacy Center Tab */}
+          {activeTab === 'privacy' && (
+            <PrivacySettings
+              preferences={personalization?.preferences}
+              onUpdatePreference={handleUpdatePreference}
+              onResetAllData={handleResetAllAIData}
+              isSaving={personalizationSaving}
+            />
+          )}
+
+          {/* Export AI Data Tab */}
+          {activeTab === 'export_data' && (
+            <ExportData addToast={addToast} />
+          )}
+
+          {/* System & Danger Zone Tab */}
           {activeTab === 'data' && (
             <div className="space-y-6">
               <Card title="Export Your Data" subtitle="Download all your financial data as JSON">

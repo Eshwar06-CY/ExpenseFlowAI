@@ -4,6 +4,7 @@ import { LayoutDashboard, ArrowUpRight, ArrowDownLeft, Sliders, Menu } from 'luc
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import CommandPalette from '../Common/CommandPalette';
 
 const mobileNavItems = [
   { name: 'Home', to: '/dashboard', icon: LayoutDashboard },
@@ -15,11 +16,24 @@ const mobileNavItems = [
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [cmdPaletteOpen, setCmdPaletteOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     setSidebarOpen(false);
   }, [location.pathname]);
+
+  // Global Cmd+K / Ctrl+K keyboard shortcut listener
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setCmdPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <div className="min-h-screen flex bg-dark-950 text-dark-100 transition-colors duration-300 font-sans antialiased relative">
@@ -98,6 +112,9 @@ const Layout = () => {
           })}
         </div>
       </nav>
+
+      {/* Global Command Palette Cmd+K / Ctrl+K Modal */}
+      <CommandPalette isOpen={cmdPaletteOpen} onClose={() => setCmdPaletteOpen(false)} />
     </div>
   );
 };

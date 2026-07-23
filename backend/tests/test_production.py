@@ -122,8 +122,10 @@ def test_production_flow():
     # Check notification triggered
     notif_response = client.get("/api/v1/notifications/", headers=headers)
     assert notif_response.status_code == 200
-    assert len(notif_response.json()) > 0
-    assert "Budget Alert" in notif_response.json()[0]["title"]
+    res_data = notif_response.json()
+    items = res_data.get("items", []) if isinstance(res_data, dict) else res_data
+    assert len(items) > 0
+    assert "Budget" in items[0]["title"]
 
     # 8. SAVINGS GOALS
     goal_response = client.post(

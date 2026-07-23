@@ -43,11 +43,18 @@ class Settings(BaseSettings):
     BREVO_SMTP_PASSWORD: Optional[str] = None
     MAIL_FROM: Optional[str] = None
 
-    # AI Financial Advisor & Local LLM (Ollama)
-    LLM_PROVIDER: str = "ollama"
-    OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_MODEL: str = "qwen3:8b"
-    OLLAMA_TIMEOUT: float = 60.0
+    # AI Financial Advisor & Provider Settings (Google Gemini 2.5 Flash)
+    AI_PROVIDER: str = "gemini"
+    LLM_PROVIDER: str = "gemini"
+
+    # Google Gemini Settings (google-genai SDK)
+    GEMINI_API_KEY: Optional[str] = None
+    GEMINI_MODEL: str = "gemini-3.6-flash"
+    GEMINI_TIMEOUT: float = 60.0
+    GEMINI_TEMPERATURE: float = 0.3
+    GEMINI_TOP_P: float = 0.9
+    GEMINI_TOP_K: int = 40
+    GEMINI_MAX_OUTPUT_TOKENS: int = 4096
 
     @property
     def effective_smtp_server(self) -> Optional[str]:

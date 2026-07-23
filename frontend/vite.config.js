@@ -13,6 +13,12 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true, // Needed for Docker container mapping
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+    },
     watch: {
       usePolling: true, // Needed for Docker volumes on Windows
     },

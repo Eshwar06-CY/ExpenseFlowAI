@@ -130,7 +130,7 @@ const Navbar = ({ onMenuClick }) => {
             <Search className="w-4 h-4 text-dark-500 light:text-slate-400" />
             <input
               type="text"
-              placeholder="Search workspaces & history..."
+              placeholder="Search or press Cmd+K..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -139,6 +139,9 @@ const Navbar = ({ onMenuClick }) => {
               onFocus={() => setShowSearchDropdown(true)}
               className="bg-transparent text-xs text-dark-200 dark:text-dark-200 light:text-slate-800 outline-none w-full placeholder-dark-500 light:placeholder-slate-400 font-medium"
             />
+            <span className="flex items-center space-x-0.5 px-1.5 py-0.5 rounded bg-dark-950 text-[10px] font-bold text-dark-400 border border-dark-800">
+              <span>⌘K</span>
+            </span>
             {searchQuery && (
               <button onClick={() => setSearchQuery('')} className="text-dark-500 hover:text-dark-200 light:hover:text-slate-700 transition-colors">
                 <X className="w-3.5 h-3.5" />

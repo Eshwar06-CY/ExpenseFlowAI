@@ -9,6 +9,8 @@ const Sidebar = ({ mobile = false, onClose }) => {
 
   const coreItems = [
     { name: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
+    { name: 'AI Streaming Chat', to: '/dashboard/chat', icon: Sparkles },
+    { name: 'AI Digest Reports', to: '/dashboard/digest', icon: FileText },
     { name: 'Where my money is (Accounts)', to: '/dashboard/accounts', icon: Landmark },
     { name: 'Money coming in (Income)', to: '/dashboard/income', icon: ArrowDownLeft },
     { name: 'Money going out (Expenses)', to: '/dashboard/expenses', icon: ArrowUpRight },

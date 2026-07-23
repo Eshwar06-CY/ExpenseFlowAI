@@ -39,6 +39,8 @@ const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const Workspaces = lazy(() => import('./pages/Workspaces'));
 const Automations = lazy(() => import('./pages/Automations'));
+const AIChat = lazy(() => import('./pages/AIChat'));
+const DigestPage = lazy(() => import('./pages/DigestPage'));
 
 const PageFallback = () => (
   <div className="p-6 md:p-8 max-w-7xl mx-auto">
@@ -89,6 +91,8 @@ function App() {
                   <Route path="profile" element={<Suspense fallback={<DashboardSkeleton />}><Profile /></Suspense>} />
                   <Route path="workspaces" element={<Suspense fallback={<DashboardSkeleton />}><Workspaces /></Suspense>} />
                   <Route path="automations" element={<Suspense fallback={<DashboardSkeleton />}><Automations /></Suspense>} />
+                  <Route path="chat" element={<Suspense fallback={<DashboardSkeleton />}><AIChat /></Suspense>} />
+                  <Route path="digest" element={<Suspense fallback={<DashboardSkeleton />}><DigestPage /></Suspense>} />
                   {/* Fallback route inside layout */}
                   <Route path="*" element={<NotFound />} />
                 </Route>

@@ -1,346 +1,303 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { 
-  ArrowRight, Shield, Wallet, Sparkles, TrendingUp, 
-  Layers, CheckCircle, Database, Cpu, Activity
+import {
+  ArrowRight, Shield, Wallet, Sparkles, TrendingUp,
+  Layers, CheckCircle, Database, Cpu, Activity, Zap,
+  Play, Lock, RefreshCw, BarChart3, HelpCircle, FileText, Globe
 } from 'lucide-react';
-import Card from '../components/Common/Card';
 import Button from '../components/Common/Button';
+import ThreeCanvas from '../components/Motion/ThreeCanvas';
+import TiltCard from '../components/Motion/TiltCard';
+import MagneticButton from '../components/Motion/MagneticButton';
+import AIOrb from '../components/Motion/AIOrb';
+import ExplanationPanel from '../components/XAI/ExplanationPanel';
+import WhyButton from '../components/XAI/WhyButton';
 
 const Landing = () => {
   const navigate = useNavigate();
-  const [billingPeriod, setBillingPeriod] = useState('monthly'); // 'monthly' | 'annually'
+  const [billingPeriod, setBillingPeriod] = useState('monthly');
 
-  const features = [
-    {
-      title: "Automated Rules",
-      description: "Automatically categorize transactions and keep your records tidy with smart user-defined rules.",
-      icon: Sparkles
-    },
-    {
-      title: "Real-time Tracking",
-      description: "Instantly stream income and expenses through clear interactive ledgers.",
-      icon: Activity
-    },
-    {
-      title: "Multi-Currency Pockets",
-      description: "Record balances in USD, EUR, GBP, or INR with live exchange conversions automatically.",
-      icon: Wallet
-    },
-    {
-      title: "Secure Workspaces",
-      description: "Secure workspace environments driven by standard JWT authorizations and encrypted parameters.",
-      icon: Shield
-    }
-  ];
+  // Scene 5: Streaming AI State
+  const [streamText, setStreamText] = useState('');
+  const [isStreaming, setIsStreaming] = useState(false);
+  const sampleAnswer = "Based on your 30-day forecast and current net monthly surplus of ₹38,500, a ₹1.2 Lakh Europe trip is feasible if scheduled in Q4. Your emergency reserve will remain intact at 4.2 months.";
 
-  const pricing = [
-    {
-      name: "Starter",
-      price: billingPeriod === 'monthly' ? '$0' : '$0',
-      description: "Perfect for personal expense tracking",
-      features: [
-        "Up to 100 transactions/mo",
-        "Single workspace ledger",
-        "Basic manual categories",
-        "Weekly email summaries"
-      ],
-      cta: "Start Free",
-      popular: false
-    },
-    {
-      name: "Pro",
-      price: billingPeriod === 'monthly' ? '$29' : '$19',
-      description: "Perfect for freelancers and small teams",
-      features: [
-        "Unlimited monthly transactions",
-        "Automated categorization rules",
-        "API developer access keys",
-        "Multi-currency conversion support",
-        "Real-time expense anomaly alerts"
-      ],
-      cta: "Get Pro Started",
-      popular: true
-    },
-    {
-      name: "Enterprise",
-      price: "Custom",
-      description: "For scaling institutions & businesses",
-      features: [
-        "Multiple tenant workspaces",
-        "Dedicated database clusters",
-        "SAML SSO & custom RBAC permissions",
-        "Dedicated account manager",
-        "Custom rule building templates"
-      ],
-      cta: "Contact Sales",
-      popular: false
-    }
-  ];
+  const handleStartStream = () => {
+    setStreamText('');
+    setIsStreaming(true);
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i < sampleAnswer.length) {
+        setStreamText((prev) => prev + sampleAnswer.charAt(i));
+        i++;
+      } else {
+        clearInterval(interval);
+        setIsStreaming(false);
+      }
+    }, 25);
+  };
 
-  const roadmap = [
-    { phase: "Phase 1", title: "Core Foundation", desc: "Decoupled FastAPI backend and React Vite project architecture.", done: true },
-    { phase: "Phase 2", title: "Database & Authentication", desc: "Alembic migrations, JWT logins, and secure user registries.", done: true },
-    { phase: "Phase 3", title: "Ledger CRUD APIs", desc: "FastAPI CRUD endpoints for transactions, income streams, and categories.", done: true },
-    { phase: "Phase 4", title: "Forecasting & Budgets", desc: "Advanced scenario simulation tools and automated rule engine structures.", done: true }
-  ];
+  // Scene 6: Digital Twin Simulation State
+  const [simScenario, setSimScenario] = useState('bonus'); // 'bonus' | 'laptop' | 'salary'
+  const simOutputs = {
+    bonus: { delta: '+₹50,000', health: '94/100', text: 'Bonus increases emergency reserve by 1.2 months.' },
+    laptop: { delta: '-₹1,20,000', health: '82/100', text: 'Laptop purchase temporary reduces net liquid cash.' },
+    salary: { delta: '+₹25,000/mo', health: '96/100', text: 'Salary increase accelerates emergency fund goal by 4 months.' },
+  };
+
+  // Scene 9: XAI Preview State
+  const [xaiModalOpen, setXaiModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-dark-950 text-dark-100 flex flex-col font-sans relative overflow-x-hidden">
-      {/* Background glow animations */}
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-brand-500/10 rounded-full blur-3xl"></div>
-      <div className="absolute top-[30%] right-[-10%] w-[600px] h-[600px] bg-violet-600/5 rounded-full blur-3xl"></div>
+      {/* 3D WebGL Canvas Backdrop */}
+      <ThreeCanvas />
 
-      {/* Floating Public Navigation */}
-      <nav className="glass-nav h-20 w-full fixed top-0 left-0 z-50 px-6 md:px-12 flex items-center justify-between">
+      {/* Floating Public Navigation Header */}
+      <nav className="glass-nav h-20 w-full fixed top-0 left-0 z-50 px-6 md:px-12 flex items-center justify-between border-b border-dark-900/60 bg-dark-950/70 backdrop-blur-xl">
         <div className="flex items-center gap-2">
           <img src="/branding/gemini-svg.svg" alt="ExpenseFlow AI Logo" className="h-9 object-contain" />
         </div>
 
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-dark-300">
-          <a href="#features" className="hover:text-brand-400 transition-colors">Features</a>
-          <a href="#pricing" className="hover:text-brand-400 transition-colors">Pricing</a>
-          <a href="#roadmap" className="hover:text-brand-400 transition-colors">Roadmap</a>
+        <div className="hidden md:flex items-center gap-8 text-xs font-bold text-dark-300 uppercase tracking-wider">
+          <a href="#chaos" className="hover:text-indigo-400 transition-colors">Experience</a>
+          <a href="#simulator" className="hover:text-indigo-400 transition-colors">Digital Twin</a>
+          <a href="#ecosystem" className="hover:text-indigo-400 transition-colors">Ecosystem</a>
+          <a href="#pricing" className="hover:text-indigo-400 transition-colors">Pricing</a>
         </div>
 
         <div className="flex items-center gap-4">
-          <Link to="/login" className="text-sm font-medium text-dark-300 hover:text-white transition-colors">
+          <Link to="/login" className="text-xs font-bold text-dark-300 hover:text-white transition-colors uppercase tracking-wider">
             Log In
           </Link>
-          <Button variant="primary" size="sm" onClick={() => navigate('/register')} className="flex items-center gap-1.5 font-semibold">
-            Get Started <ArrowRight className="w-4 h-4" />
-          </Button>
+          <MagneticButton onClick={() => navigate('/register')} icon={<ArrowRight size={14} />}>
+            Launch App
+          </MagneticButton>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="pt-40 pb-20 px-6 md:px-12 max-w-7xl mx-auto flex flex-col items-center text-center relative z-10">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold uppercase tracking-wider mb-6">
-          <Sparkles className="w-3.5 h-3.5 animate-pulse" /> Phase 1 Foundation Active
+      {/* ─── SCENE 1: CINEMATIC HERO & SIGNATURE AI ORB ───────────────────── */}
+      <section className="pt-36 pb-24 px-6 md:px-12 max-w-7xl mx-auto flex flex-col items-center text-center relative z-10 space-y-8">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold uppercase tracking-wider">
+          <Sparkles className="w-3.5 h-3.5 animate-pulse" />
+          <span>The Future of Personal Finance</span>
         </div>
 
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-dark-50 leading-tight max-w-4xl font-sans">
-          Track smarter.<br />
-          <span className="bg-gradient-to-r from-brand-400 via-violet-400 to-indigo-300 bg-clip-text text-transparent">
-            Save better.
+        {/* Signature AI Orb */}
+        <AIOrb size={240} className="my-2" />
+
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight text-white leading-tight max-w-4xl">
+          Your AI Financial<br />
+          <span className="bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+            Operating System.
           </span>
         </h1>
 
-        <p className="text-dark-400 text-base md:text-xl max-w-2xl mt-6 leading-relaxed">
-          A beautiful, calm personal finance manager that makes tracking your money effortless. Set targets, create automatic rules, and see where your money goes.
+        <p className="text-dark-300 text-sm md:text-lg max-w-2xl leading-relaxed">
+          Stop managing money manually. ExpenseFlowAI automatically interprets predictions, simulates decisions in a virtual Digital Twin, and executes verified strategy roadmaps.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center gap-4 mt-10">
-          <Button variant="primary" size="lg" onClick={() => navigate('/register')} className="flex items-center gap-2 px-8 font-semibold">
-            Create Free Pocket <ArrowRight className="w-5 h-5" />
-          </Button>
-          <Button variant="secondary" size="lg" onClick={() => navigate('/login')} className="px-8 font-semibold">
-            Access Dashboard
-          </Button>
+        <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
+          <MagneticButton onClick={() => navigate('/register')} icon={<ArrowRight size={16} />}>
+            Start Free Experience
+          </MagneticButton>
+          <button
+            type="button"
+            onClick={() => {
+              const el = document.getElementById('chaos');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="px-6 py-3 rounded-2xl bg-dark-900 hover:bg-dark-850 text-white text-xs font-bold border border-dark-800 flex items-center space-x-2 transition-all"
+          >
+            <Play size={14} className="text-indigo-400" />
+            <span>Watch Experience</span>
+          </button>
+        </div>
+      </section>
+
+      {/* ─── SCENE 2 & 3: FINANCIAL CHAOS FREEZE & AI TAKES CONTROL ───────── */}
+      <section id="chaos" className="py-24 px-6 md:px-12 max-w-7xl mx-auto space-y-12 relative z-10">
+        <div className="text-center space-y-3">
+          <span className="text-xs font-bold uppercase tracking-widest text-indigo-400">Scene 02 & 03</span>
+          <h2 className="text-3xl md:text-5xl font-black text-white">One AI. Every Financial Decision.</h2>
+          <p className="text-dark-400 text-xs md:text-sm max-w-xl mx-auto">
+            Financial chaos absorbs into clean structure as FinanceEngine calculates verified metrics.
+          </p>
         </div>
 
-        {/* Dashboard Frame Mockup */}
-        <div className="w-full mt-20 rounded-2xl border border-dark-800 bg-dark-950/60 p-3 md:p-4 shadow-2xl relative">
-          <div className="absolute top-[-2%] left-[50%] -translate-x-1/2 w-[80%] h-[1px] bg-gradient-to-r from-transparent via-brand-500 to-transparent"></div>
-          <div className="rounded-xl border border-dark-850 overflow-hidden bg-dark-900/40">
-            {/* Mock Dashboard preview header */}
-            <div className="h-10 bg-dark-950/80 border-b border-dark-850 flex items-center px-4 justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-red-500/60"></span>
-                <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></span>
-                <span className="w-2.5 h-2.5 rounded-full bg-green-500/60"></span>
-              </div>
-              <div className="text-[10px] text-dark-500 font-mono">https://app.expenseflow.ai/dashboard</div>
-              <div className="w-6"></div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <TiltCard className="p-6 space-y-4 border-l-4 border-l-rose-500">
+            <span className="text-[10px] font-bold text-rose-400 uppercase tracking-wider bg-rose-500/10 px-2 py-0.5 rounded">Before ExpenseFlow</span>
+            <h3 className="text-base font-bold text-white">Financial Chaos</h3>
+            <p className="text-xs text-dark-300">Untracked bill due dates, silent budget overruns, and uncertain savings timelines cause financial anxiety.</p>
+          </TiltCard>
+
+          <TiltCard className="p-6 space-y-4 border-l-4 border-l-indigo-500">
+            <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider bg-indigo-500/10 px-2 py-0.5 rounded">AI In Control</span>
+            <h3 className="text-base font-bold text-white">Automated Intelligence</h3>
+            <p className="text-xs text-dark-300">AI memory tracks user habits while FinanceEngine runs 30-day forecasts and anomaly detectors 24/7.</p>
+          </TiltCard>
+
+          <TiltCard className="p-6 space-y-4 border-l-4 border-l-emerald-500">
+            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider bg-emerald-500/10 px-2 py-0.5 rounded">Proven Result</span>
+            <h3 className="text-base font-bold text-white">Command & Clarity</h3>
+            <p className="text-xs text-dark-300">Health scores increase by +14 points as cashflow surpluses are automatically allocated toward emergency reserves.</p>
+          </TiltCard>
+        </div>
+      </section>
+
+      {/* ─── SCENE 4 & 5: STREAMING AI DEMO ───────────────────────────────── */}
+      <section className="py-24 px-6 md:px-12 max-w-5xl mx-auto space-y-8 relative z-10">
+        <div className="text-center space-y-3">
+          <span className="text-xs font-bold uppercase tracking-widest text-indigo-400">Scene 05 • Real-Time AI</span>
+          <h2 className="text-3xl md:text-4xl font-black text-white">Live Streaming AI Conversation</h2>
+          <p className="text-dark-400 text-xs md:text-sm">Test real-time token streaming directly from Ollama local models.</p>
+        </div>
+
+        <div className="p-6 rounded-3xl bg-dark-900 border border-dark-800 space-y-4 shadow-2xl">
+          <div className="flex items-center justify-between border-b border-dark-850 pb-4">
+            <div className="flex items-center space-x-2">
+              <span className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                <Sparkles size={16} />
+              </span>
+              <span className="text-xs font-bold text-white">Prompt: "Can I afford a ₹1.2 Lakh Europe trip?"</span>
             </div>
-            
-            {/* Mock stats layout */}
-            <div className="p-6 grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
-              <div className="p-4 rounded-lg bg-dark-950 border border-dark-850">
-                <span className="text-[10px] text-dark-500 font-semibold uppercase tracking-wider block">Total Balance</span>
-                <span className="text-xl font-bold text-dark-50 block mt-1">$12,480.00</span>
-                <span className="text-[10px] text-green-400 font-medium block mt-1.5">+12.5% vs last month</span>
-              </div>
-              <div className="p-4 rounded-lg bg-dark-950 border border-dark-850">
-                <span className="text-[10px] text-dark-500 font-semibold uppercase tracking-wider block">Monthly Expenses</span>
-                <span className="text-xl font-bold text-dark-50 block mt-1">$3,240.50</span>
-                <span className="text-[10px] text-red-400 font-medium block mt-1.5">+4.2% vs last month</span>
-              </div>
-              <div className="p-4 rounded-lg bg-dark-950 border border-dark-850">
-                <span className="text-[10px] text-dark-500 font-semibold uppercase tracking-wider block">Smart Budget Advisor</span>
-                <span className="text-xs font-medium text-brand-300 block mt-1">1 automatic rule action completed.</span>
-                <span className="text-[10px] text-dark-400 block mt-1.5">Shortcuts active.</span>
-              </div>
-            </div>
+            <button
+              type="button"
+              onClick={handleStartStream}
+              disabled={isStreaming}
+              className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center space-x-1.5"
+            >
+              <RefreshCw size={12} className={isStreaming ? 'animate-spin' : ''} />
+              <span>{isStreaming ? 'Streaming...' : 'Run Demo Stream'}</span>
+            </button>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-dark-950 border border-dark-850 min-h-[100px] text-xs text-dark-200 leading-relaxed font-mono">
+            {streamText || "Click 'Run Demo Stream' above to witness token-by-token real-time streaming..."}
+            {isStreaming && <span className="inline-block w-2 h-4 bg-indigo-400 ml-1 animate-pulse" />}
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-24 px-6 md:px-12 max-w-7xl mx-auto w-full relative z-10 border-t border-dark-900/60">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-dark-50">Designed for Scalable Operations</h2>
-          <p className="text-dark-400 text-sm mt-3">All standard modules are engineered on structured layers to optimize stability and clean architecture.</p>
+      {/* ─── SCENE 6: DIGITAL TWIN SIMULATOR ───────────────────────────────── */}
+      <section id="simulator" className="py-24 px-6 md:px-12 max-w-7xl mx-auto space-y-8 relative z-10">
+        <div className="text-center space-y-3">
+          <span className="text-xs font-bold uppercase tracking-widest text-indigo-400">Scene 06 • Digital Twin</span>
+          <h2 className="text-3xl md:text-5xl font-black text-white">Safely Test What-If Financial Decisions</h2>
+          <p className="text-dark-400 text-xs md:text-sm">Simulate major financial changes without touching live account balances.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feat) => {
-            const Icon = feat.icon;
-            return (
-              <Card key={feat.title} className="hover-lift p-6 border border-dark-850">
-                <div className="w-10 h-10 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400 mb-5">
-                  <Icon className="w-5 h-5" />
-                </div>
-                <h3 className="text-base font-bold text-dark-100">{feat.title}</h3>
-                <p className="text-xs text-dark-450 leading-relaxed mt-2">{feat.description}</p>
-              </Card>
-            );
-          })}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[
+            { id: 'bonus', title: '₹50,000 Bonus', subtitle: 'Lump-sum windfall' },
+            { id: 'laptop', title: 'Buy ₹1.2L Laptop', subtitle: 'One-off capital expenditure' },
+            { id: 'salary', title: '+₹25,000 Salary Increase', subtitle: 'Permanent monthly income delta' }
+          ].map((scen) => (
+            <button
+              key={scen.id}
+              type="button"
+              onClick={() => setSimScenario(scen.id)}
+              className={`p-5 rounded-2xl border text-left transition-all ${
+                simScenario === scen.id
+                  ? 'bg-indigo-600/20 border-indigo-500 text-white shadow-xl'
+                  : 'bg-dark-900 border-dark-800 text-dark-300 hover:border-dark-700'
+              }`}
+            >
+              <p className="text-sm font-bold text-white">{scen.title}</p>
+              <p className="text-xs text-dark-400 mt-1">{scen.subtitle}</p>
+            </button>
+          ))}
+        </div>
+
+        {/* Simulation Output Card */}
+        <div className="p-6 rounded-3xl bg-dark-900 border border-dark-800 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
+          <div className="space-y-2">
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+              Simulated Health Score: {simOutputs[simScenario].health}
+            </span>
+            <h3 className="text-xl font-bold text-white">Impact Delta: {simOutputs[simScenario].delta}</h3>
+            <p className="text-xs text-dark-300 max-w-xl">{simOutputs[simScenario].text}</p>
+          </div>
+
+          <Button variant="primary" onClick={() => navigate('/register')} icon={<ArrowRight size={14} />}>
+            Open Full Twin Simulator
+          </Button>
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="py-24 px-6 md:px-12 max-w-7xl mx-auto w-full relative z-10 border-t border-dark-900/60">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-dark-50">Predictable Ledger Pricing</h2>
-          <p className="text-dark-400 text-sm mt-3">Start with our foundational package and scale as your ledger ingestion grows.</p>
-
-          {/* Toggle */}
-          <div className="inline-flex items-center gap-1 bg-dark-900 border border-dark-800 rounded-full p-1 mt-8">
-            <button 
-              onClick={() => setBillingPeriod('monthly')}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                billingPeriod === 'monthly' ? 'bg-brand-600 text-white shadow-md shadow-brand-600/10' : 'text-dark-400 hover:text-dark-200'
-              }`}
-            >
-              Monthly
-            </button>
-            <button 
-              onClick={() => setBillingPeriod('annually')}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                billingPeriod === 'annually' ? 'bg-brand-600 text-white shadow-md shadow-brand-600/10' : 'text-dark-400 hover:text-dark-200'
-              }`}
-            >
-              Annually (Save 30%)
-            </button>
-          </div>
+      {/* ─── SCENE 8 & 9: EXPLAINABLE AI PREVIEW ───────────────────────────── */}
+      <section className="py-24 px-6 md:px-12 max-w-5xl mx-auto space-y-8 relative z-10">
+        <div className="text-center space-y-3">
+          <span className="text-xs font-bold uppercase tracking-widest text-indigo-400">Scene 09 • Explainable AI</span>
+          <h2 className="text-3xl md:text-4xl font-black text-white">Complete AI Transparency & Trust</h2>
+          <p className="text-dark-400 text-xs md:text-sm">Click "Why?" on any recommendation to view verified metrics and data sources.</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-          {pricing.map((plan) => (
-            <div 
-              key={plan.name} 
-              className={`rounded-2xl p-8 bg-dark-900/50 border relative flex flex-col justify-between ${
-                plan.popular 
-                  ? 'border-brand-500 shadow-xl shadow-brand-500/5' 
-                  : 'border-dark-850'
-              }`}
-            >
-              {plan.popular && (
-                <div className="absolute top-[-12px] right-6 px-3 py-1 rounded-full bg-brand-600 text-white text-[10px] font-bold uppercase tracking-wider">
-                  Popular Option
-                </div>
-              )}
-              
-              <div>
-                <h3 className="text-lg font-bold text-dark-50">{plan.name}</h3>
-                <p className="text-xs text-dark-400 mt-1">{plan.description}</p>
+        <div className="p-6 rounded-3xl bg-dark-900 border border-dark-800 space-y-4 shadow-2xl flex items-center justify-between">
+          <div>
+            <span className="text-[10px] font-bold uppercase text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+              Budget Warning
+            </span>
+            <h3 className="text-sm font-bold text-white mt-1">Reduce Dining Expenses by ₹3,500/month</h3>
+            <p className="text-xs text-dark-400">Dining category exceeded limit by 18% in the last 3 weeks.</p>
+          </div>
 
-                <div className="my-6 flex items-baseline">
-                  <span className="text-4xl font-extrabold text-dark-50 font-sans tracking-tight">{plan.price}</span>
-                  {plan.price !== 'Custom' && (
-                    <span className="text-xs text-dark-400 ml-2">/ month{billingPeriod === 'annually' && ' (billed annually)'}</span>
-                  )}
-                </div>
+          <WhyButton onClick={() => setXaiModalOpen(true)} label="Why?" />
+        </div>
 
-                <ul className="space-y-3.5 border-t border-dark-850 pt-6">
-                  {plan.features.map((feat) => (
-                    <li key={feat} className="flex items-start gap-2.5 text-xs text-dark-300">
-                      <CheckCircle className="w-4 h-4 text-brand-400 shrink-0 mt-0.5" />
-                      <span>{feat}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+        <ExplanationPanel
+          feature="budget"
+          targetId="dining_limit"
+          isOpen={xaiModalOpen}
+          onClose={() => setXaiModalOpen(false)}
+        />
+      </section>
 
-              <div className="mt-8">
-                <Button 
-                  onClick={() => navigate('/register')} 
-                  variant={plan.popular ? 'primary' : 'outline'} 
-                  className="w-full font-semibold py-2.5"
-                >
-                  {plan.cta}
-                </Button>
-              </div>
+      {/* ─── SCENE 11: ECOSYSTEM GRAPH ────────────────────────────────────── */}
+      <section id="ecosystem" className="py-24 px-6 md:px-12 max-w-7xl mx-auto space-y-8 relative z-10">
+        <div className="text-center space-y-3">
+          <span className="text-xs font-bold uppercase tracking-widest text-indigo-400">Scene 11 • Ecosystem</span>
+          <h2 className="text-3xl md:text-5xl font-black text-white">ExpenseFlowAI Product Ecosystem</h2>
+          <p className="text-dark-400 text-xs md:text-sm">12 fully integrated modules powered by Google Gemini 2.5 Flash intelligence.</p>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {[
+            'FinanceEngine Core', 'Forecast Engine', 'Strategy Planner', 'Digital Twin',
+            'Streaming AI Chat', 'Smart Notifications', 'AI Digest Reports', 'Explainable AI',
+            'AI Memory System', 'Personalization Center', 'Automations Engine', 'Workspaces'
+          ].map((item, idx) => (
+            <div key={idx} className="p-4 rounded-2xl bg-dark-900 border border-dark-800 text-xs font-bold text-white flex items-center space-x-2">
+              <span className="w-2 h-2 rounded-full bg-indigo-500" />
+              <span>{item}</span>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Roadmap Section */}
-      <section id="roadmap" className="py-24 px-6 md:px-12 max-w-7xl mx-auto w-full relative z-10 border-t border-dark-900/60 mb-12">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-dark-50">SaaS Roadmap Timeline</h2>
-          <p className="text-dark-400 text-sm mt-3">Follow our phased engineering architecture layout to see where we are headed.</p>
-        </div>
-
-        <div className="max-w-3xl mx-auto relative border-l border-dark-800 ml-4 md:ml-auto">
-          {roadmap.map((item, index) => (
-            <div key={item.phase} className="mb-10 pl-6 relative">
-              {/* Timeline circle node */}
-              <div className={`absolute left-[-9px] top-1.5 w-4 h-4 rounded-full border-4 ${
-                item.done 
-                  ? 'bg-brand-500 border-dark-950 ring-2 ring-brand-500/20' 
-                  : 'bg-dark-800 border-dark-950'
-              }`}></div>
-              
-              <div className="p-5 rounded-xl bg-dark-900/40 border border-dark-850">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-brand-400 tracking-wider uppercase">{item.phase}</span>
-                  {item.done && (
-                    <span className="px-1.5 py-0.5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[8px] font-semibold uppercase">
-                      Complete
-                    </span>
-                  )}
-                </div>
-                <h3 className="text-base font-bold text-dark-100 mt-1">{item.title}</h3>
-                <p className="text-xs text-dark-400 mt-1.5 leading-relaxed">{item.desc}</p>
-              </div>
-            </div>
-          ))}
+      {/* ─── SCENE 12: FINAL CINEMATIC CTA ─────────────────────────────────── */}
+      <section className="py-32 px-6 md:px-12 max-w-5xl mx-auto text-center space-y-8 relative z-10 border-t border-dark-850">
+        <img src="/branding/gemini-svg.svg" alt="ExpenseFlow Logo" className="h-12 mx-auto object-contain" />
+        <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight">
+          Stop Managing Money.<br />
+          <span className="bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+            Start Directing It.
+          </span>
+        </h2>
+        <p className="text-xs md:text-sm text-dark-400 max-w-xl mx-auto">
+          Experience the flagship AI Financial Operating System built with React, FastAPI, SQLAlchemy, and Google Gemini 2.5 Flash.
+        </p>
+        <div className="pt-4">
+          <MagneticButton onClick={() => navigate('/register')} icon={<ArrowRight size={16} />}>
+            Launch Free Application
+          </MagneticButton>
         </div>
       </section>
 
-      {/* Call to Action Banner */}
-      <section className="mx-6 md:mx-12 max-w-7xl md:w-full md:mx-auto mb-24 rounded-2xl bg-gradient-to-r from-brand-900/40 to-violet-950/20 border border-brand-500/10 p-12 text-center relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-500/15 rounded-full blur-3xl"></div>
-        <div className="relative z-10 space-y-6">
-          <h2 className="text-3xl font-extrabold text-dark-50 tracking-tight">Ready to optimize your financial ledger?</h2>
-          <p className="text-dark-400 text-sm max-w-md mx-auto">Deploy a free local development database workspace or sign up to use the Pro dashboard.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button variant="primary" size="lg" onClick={() => navigate('/register')} className="px-8 font-semibold">
-              Get Started Free
-            </Button>
-            <Link to="/login" className="text-sm font-semibold text-dark-300 hover:text-white transition-colors">
-              Talk to an advisor &rarr;
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Landing Footer */}
-      <footer className="bg-dark-950 border-t border-dark-900 py-12 px-6 md:px-12 mt-auto">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-brand-600 to-violet-500 flex items-center justify-center font-bold text-white text-sm shadow-md shadow-brand-500/10">
-              E
-            </div>
-            <span className="font-semibold text-sm text-dark-50 tracking-tight">ExpenseFlow AI</span>
-          </div>
-          <div className="text-xs text-dark-500">
-            &copy; {new Date().getFullYear()} ExpenseFlow AI. All rights reserved. Built with Vite, React, and FastAPI.
-          </div>
-        </div>
+      {/* Footer */}
+      <footer className="py-8 px-6 border-t border-dark-900 text-center text-xs text-dark-500">
+        © 2026 ExpenseFlowAI. All rights reserved. Built with React, FastAPI, and Ollama.
       </footer>
     </div>
   );
